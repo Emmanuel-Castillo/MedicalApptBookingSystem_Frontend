@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 function ProtectedLayout() {
-  const { user, loadingUser, logOut } = useAuth();
+  const { user, logOut } = useAuth();
   const navigate = useNavigate();
 
   const handleLogOut = () => {
@@ -10,7 +10,6 @@ function ProtectedLayout() {
     navigate("/login");
   };
 
-  if (loadingUser) return <p>Loading user...</p>;
   if (!user) {
     return <Navigate to={"/login"} replace />;
   }
