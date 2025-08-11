@@ -3,12 +3,13 @@ import { useAuth } from "../context/AuthContext";
 import AdminDashboard from "./AdminDashboard";
 import DoctorDetails from "./DoctorDetails";
 import PatientDetails from "./PatientDetails";
+import { Navigate } from "react-router-dom";
 
 function Home() {
   const { user, loadingUser } = useAuth();
 
   if (loadingUser) return <p>Loading user...</p>
-  if (!user) return <p>User not found!</p>
+  if (!user) return <Navigate to={"/login"}/>
 
   switch (user.role) {
     case "Admin":

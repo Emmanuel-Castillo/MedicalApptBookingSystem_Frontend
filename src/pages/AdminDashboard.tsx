@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { UserDto, UserRole } from "../types/dtos";
+import ErrorsBox from "../components/ErrorsBox";
 
 function AdminDashboard() {
   const { user, loadingUser } = useAuth();
@@ -52,6 +53,9 @@ function AdminDashboard() {
 
   return (
     <div className="container mt-4">
+
+      <ErrorsBox errors={errors}/>
+
       <div className="d-flex mb-4">
         <h2>Welcome, {fullName}!</h2>
       </div>
