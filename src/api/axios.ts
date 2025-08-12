@@ -1,6 +1,8 @@
 import axios from "axios";
 import { LOCAL_STORAGE_AUTH_KEY } from "../context/AuthContext";
 
+console.log(process.env.REACT_APP_WEB_API)
+
 // Creating api instance with given base url
 const api = axios.create({
   baseURL: process.env.REACT_APP_WEB_API,
@@ -22,13 +24,17 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+    const requestUrl = error.config?.url || "";
+
+    if (status === 401 && !requestUrl.includes("/auth/login")) {
       localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
       window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
+
 
 
 export default api;

@@ -24,11 +24,12 @@ function Login() {
 
   // If user is logged in, navigate to their respective home screens
   useEffect(() => {
-    if (user) navigate("/");
+    if (user) {
+      navigate("/");
+    }
   }, [user]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setErrors([]);
     setLoading(true);
 
@@ -46,7 +47,9 @@ function Login() {
         email: email,
         password: password,
       };
+
       const response = await api.post("/auth/login", dto);
+
       const token = response.data.token;
 
       // Decode JWT token to retrieve user data
@@ -67,6 +70,7 @@ function Login() {
       setErrors([serverMessage]);
     } finally {
       setLoading(false);
+      return
     }
   };
 
@@ -76,7 +80,13 @@ function Login() {
 
       <ErrorsBox errors={errors} />
 
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          console.log("Prevented default 1")
+          handleSubmit();
+        }}
+      >
         <div className="mb-3">
           <label>Email</label>
           <input
@@ -98,12 +108,21 @@ function Login() {
             type="password"
           />
         </div>
-        <button className="btn btn-success" disabled={loading}>
+        <button type="submit" className="btn btn-success" disabled={loading}>
           Login
         </button>
       </form>
 
-      <p>Don't have an account? <span className="link-primary" style={{cursor: "pointer"}} onClick={() => navigate("/register")}>Signup</span></p>
+      <p>
+        Don't have an account?{" "}
+        <span
+          className="link-primary"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/register")}
+        >
+          Signup
+        </span>
+      </p>
     </div>
   );
 }

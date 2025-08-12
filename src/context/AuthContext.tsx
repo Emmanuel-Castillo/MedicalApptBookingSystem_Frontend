@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logIn = (userData: AuthUser) => {
     localStorage.setItem(LOCAL_STORAGE_AUTH_KEY, JSON.stringify(userData));
     setUser(userData);
-    window.location.href = "/";
   };
 
   const logOut = () => {
