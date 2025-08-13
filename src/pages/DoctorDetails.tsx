@@ -16,7 +16,7 @@ function DoctorDetails() {
   // DOCTOR ONLY: Retrieve user to see if Doctor. If so, use user.id for data retrieval
   const { user, loadingUser } = useAuth();
 
-  console.log(loadingUser, user)
+  console.log(loadingUser, user);
 
   const [data, setData] = useState<GetDoctorInfoResponse | null>(null);
   const [loadingData, setLoadingData] = useState(true);
@@ -56,8 +56,18 @@ function DoctorDetails() {
 
   return (
     <div>
-      <h2>User Details</h2>
-      <UserDetails user={doctor} />
+      <div className="gap-3">
+        <h2>User Details</h2>
+        {user.role == "Admin" && (
+          <button
+            className="btn btn-primary mb-3"
+            onClick={() => navigate(`/editUser/${doctor.id}`)}
+          >
+            Edit User
+          </button>
+        )}
+        <UserDetails user={doctor} />
+      </div>
 
       <div className="gap-3 mb-3">
         <h4>Time Slots</h4>

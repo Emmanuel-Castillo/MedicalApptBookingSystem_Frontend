@@ -45,11 +45,12 @@ function PatientDetails() {
       }
     };
 
+    // Invoke getPatientDetails once user has been retrieved!
     if (user) getPatientDetails();
   }, [user]);
 
-  if (loadingUser) return <p>Loading user...</p>
-  if (!user) return <p>User not found!</p>
+  if (loadingUser) return <p>Loading user...</p>;
+  if (!user) return <p>User not found!</p>;
   if (loadingData) return <div>Loading patient details...</div>;
   if (!data) return <div>Patient details not found.</div>;
 
@@ -65,7 +66,7 @@ function PatientDetails() {
   };
 
   return (
-    <div>
+    <div className="d-flex flex-column gap-3">
       {showModal && selectedAppt && (
         <Modal
           title={"Delete Appointment"}
@@ -76,10 +77,15 @@ function PatientDetails() {
         />
       )}
 
-      <h2>User Details</h2>
-      <UserDetails user={patient} />
+      <div className="gap-3">
+        <h2>User Details</h2>
+        {user.role == 'Admin' && <button className="btn btn-primary mb-3"
+          onClick={() => navigate(`/editUser/${patient.id}`)}
+        >Edit User</button>}
+        <UserDetails user={patient} />
+      </div>
 
-      <div className="gap-3 mb-3">
+      <div className="gap-3">
         <h4>Appointments</h4>
         <button
           className="btn btn-primary"

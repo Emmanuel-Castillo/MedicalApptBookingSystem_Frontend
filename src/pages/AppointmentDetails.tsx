@@ -10,8 +10,6 @@ function AppointmentDetails() {
   const { id } = useParams();
   const { user, loadingUser } = useAuth();
 
-  console.log(loadingUser, user)
-
   const [appointmentData, setAppointmentData] = useState<AppointmentDto | null>(
     null
   );

@@ -28,3 +28,9 @@ export type GetDoctorTimeSlotsRequest = {
 export type GePatientAppointmentsRequest = {
     PatientId?: string;
 }
+
+export type ChangeUserRequest = {
+    id: string;
+    newFullName: string;
+    newEmail: string;
+}

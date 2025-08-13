@@ -83,7 +83,6 @@ function Login() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          console.log("Prevented default 1")
           handleSubmit();
         }}
       >

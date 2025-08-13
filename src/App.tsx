@@ -11,6 +11,7 @@ import DoctorDetails from "./pages/DoctorDetails";
 import CreateTimeSlots from "./pages/CreateTimeSlots";
 import Home from "./pages/Home";
 import AppointmentDetails from "./pages/AppointmentDetails";
+import EditUser from "./pages/EditUser";
 
 function App() {
   return (
@@ -63,7 +64,7 @@ function App() {
               path="/appointments/:id"
               element={
                 <PrivateRoute allowedRoles={["Admin", "Patient"]}>
-                  <AppointmentDetails/>
+                  <AppointmentDetails />
                 </PrivateRoute>
               }
             />
@@ -74,6 +75,16 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={["Admin", "Patient"]}>
                   <BookAppointment />
+                </PrivateRoute>
+              }
+            />
+
+            {/* EDIT USER */}
+            <Route
+              path="/editUser/:userId"
+              element={
+                <PrivateRoute allowedRoles={['Admin']}>
+                  <EditUser />
                 </PrivateRoute>
               }
             />

@@ -37,8 +37,6 @@ function BookAppointment() {
 
   const { user, loadingUser } = useAuth();
 
-  console.log(loadingUser, user)
-
   if (loadingUser) return <p>Loading user...</p>;
   if (!user) return <p>User not found!</p>;
   if (loadingTimeSlots) return <div>Loading available time slots...</div>;
@@ -48,7 +46,6 @@ function BookAppointment() {
 
     try {
       setLoadingInModal(true);
-      console.log("Selected slot: ", selectedSlotId);
       const dto: BookAppointmentRequest = {
         TimeSlotId: selectedSlotId,
         PatientId: user.role == "Admin" ? patientId : undefined,

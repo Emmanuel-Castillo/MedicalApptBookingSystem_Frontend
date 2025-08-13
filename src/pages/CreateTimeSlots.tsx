@@ -34,8 +34,6 @@ function CreateTimeSlots() {
 
   const { user, loadingUser } = useAuth();
 
-  console.log(loadingUser, user)
-
   if (loadingUser) return <p>Loading user...</p>
   if (!user) return <p>User not found!</p>;
 
@@ -52,7 +50,6 @@ function CreateTimeSlots() {
         EndTime: endTime + ":00",
         DoctorId: user.role == "Admin" ? doctorId : undefined,
       };
-      console.log(body);
       await api.post("/timeslots", body);
       navigate("/");
     } catch (error: any) {
