@@ -1,4 +1,7 @@
 export type UserRole = "Patient" | "Doctor" | "Admin";
+export enum DayOfWeek {
+  SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
+}
 
 export type UserDto = {
   id: number;
@@ -35,4 +38,14 @@ export type UserLoginDto = {
   email: string;
   password: string;
 };
+
+export type DoctorAvailabilityDto = {
+  id: number;
+  doctor: UserDto;
+  dayOfWeek: DayOfWeek;
+  startTime: string;
+  endTime: string;
+  startDate: string;
+  endDate?: string;
+}
 

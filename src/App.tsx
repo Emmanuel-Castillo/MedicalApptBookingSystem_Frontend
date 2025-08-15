@@ -12,6 +12,7 @@ import CreateTimeSlots from "./pages/CreateTimeSlots";
 import Home from "./pages/Home";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import EditUser from "./pages/EditUser";
+import SetAvailability from "./pages/SetAvailability";
 
 function App() {
   return (
@@ -85,6 +86,16 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={['Admin']}>
                   <EditUser />
+                </PrivateRoute>
+              }
+            />
+
+            {/* SET DOCTOR'S AVAILABILITY */}
+            <Route
+              path="/availability/:id"
+              element={
+                <PrivateRoute allowedRoles={['Admin', 'Doctor']}>
+                  <SetAvailability/>
                 </PrivateRoute>
               }
             />

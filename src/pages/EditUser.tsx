@@ -55,7 +55,6 @@ function EditUser() {
         newFullName: formFullName,
         newEmail: formEmail,
       };
-      console.log(changeUserRequest);
       const response = await api.post("/users", changeUserRequest);
       if (response.status == 200) navigate("/");
     } catch (error: any) {

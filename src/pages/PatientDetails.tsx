@@ -77,15 +77,22 @@ function PatientDetails() {
         />
       )}
 
-      <div className="gap-3">
-        <h2>User Details</h2>
-        {user.role == 'Admin' && <button className="btn btn-primary mb-3"
-          onClick={() => navigate(`/editUser/${patient.id}`)}
-        >Edit User</button>}
+      <div className="gap-1 bg-light p-3 rounded-3">
+        <div className="d-flex gap-2">
+          <h2>User Details</h2>
+          {user.role == "Admin" && (
+            <button
+              className="btn btn-primary mb-3"
+              onClick={() => navigate(`/editUser/${patient.id}`)}
+            >
+              Edit User
+            </button>
+          )}
+        </div>
         <UserDetails user={patient} />
       </div>
 
-      <div className="gap-3">
+      <div className="d-flex gap-2">
         <h4>Appointments</h4>
         <button
           className="btn btn-primary"

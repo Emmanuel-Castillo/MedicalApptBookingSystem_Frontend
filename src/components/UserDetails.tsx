@@ -2,7 +2,7 @@ import { UserDto } from "../types/dtos";
 
 function UserDetails({ user }: { user: UserDto }) {
   return (
-    <div className="bg-light p-3 rounded border">
+    <div>
       <p>
         <strong>Full Name:</strong> {user.fullName}
       </p>

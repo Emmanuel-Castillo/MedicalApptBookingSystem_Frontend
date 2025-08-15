@@ -83,36 +83,37 @@ function BookAppointment() {
       {timeSlots.length === 0 ? (
         <p>No available time slots.</p>
       ) : (
-        <div className="row row-cols-1 row-cols-md-2 g-4">
-          {timeSlots.map((slot) => (
-            <div className="col" key={slot.id}>
-              <div
-                className={`card ${
-                  selectedSlotId === slot.id ? "border-primary" : ""
-                }`}
-                style={{ cursor: "pointer" }}
-              >
+        <>
+          <div className="row row-cols-1 row-cols-md-2 g-4">
+            {timeSlots.map((slot) => (
+              <div className="col" key={slot.id}>
                 <div
-                  className="card-body"
-                  onClick={() =>
-                    setSelectedSlotId((prev) =>
-                      prev === slot.id ? null : slot.id
-                    )
-                  }
+                  className={`card ${
+                    selectedSlotId === slot.id ? "border-primary" : ""
+                  }`}
+                  style={{ cursor: "pointer" }}
                 >
-                  <h5 className="card-title">{slot.doctor.fullName}</h5>
-                  <p className="card-text">
-                    <strong>Start:</strong>{" "}
-                    {new Date(slot.startTime).toLocaleString()}
-                    <br />
-                    <strong>End:</strong>{" "}
-                    {new Date(slot.endTime).toLocaleString()}
-                  </p>
+                  <div
+                    className="card-body"
+                    onClick={() =>
+                      setSelectedSlotId((prev) =>
+                        prev === slot.id ? null : slot.id
+                      )
+                    }
+                  >
+                    <h5 className="card-title">{slot.doctor.fullName}</h5>
+                    <p className="card-text">
+                      <strong>Start:</strong>{" "}
+                      {new Date(slot.startTime).toLocaleString()}
+                      <br />
+                      <strong>End:</strong>{" "}
+                      {new Date(slot.endTime).toLocaleString()}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-
+            ))}
+          </div>
           <div className="mt-4 text-end">
             <button
               className="btn btn-primary"
@@ -122,7 +123,7 @@ function BookAppointment() {
               Book Appointment
             </button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
