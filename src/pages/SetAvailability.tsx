@@ -14,14 +14,19 @@ function SetAvailability() {
   );
   const [errors, setErrors] = useState<string[]>([]);
   const [daysOfWeek, setDaysOfWeek] = useState<DayOfWeek[]>([]);
-  const [startTimeHr, setStartTimeHr] = useState("");
-  const [endTimeHr, setEndTimeHr] = useState("");
+  const [startTimeHr, setStartTimeHr] = useState(6); // Default start time is 6:00AM
+  const [startTimeIsPm, setStartTimeIsPm] = useState(false);
+  const [endTimeHr, setEndTimeHr] = useState(6); // Default end time is 6:00PM
+  const [endTimeIsPm, setEndTimeIsPm] = useState(true);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [formReady, setFormReady] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const DAYS_OF_WEEK_TO_LIST = Object.entries(DayOfWeek).filter(
+    ([key, value]) => typeof value === "number"
+  );
 
   //   export type SetDoctorAvailRequest = {
   //     doctorId: number;
@@ -32,6 +37,7 @@ function SetAvailability() {
   //     endDate?: string;
   //   };
 
+  // Fetch doctor's current availability
   useEffect(() => {
     const getDocAvail = async () => {
       try {
@@ -48,23 +54,29 @@ function SetAvailability() {
     getDocAvail();
   }, []);
 
+  // If all form inputs are set, set formReady
+  // startTime, endTime, startTimeIsPm, and endTimeIsPm will always be truthy
   useEffect(() => {
-    if (daysOfWeek && startTimeHr && endTimeHr && startDate) setFormReady(true);
+    if (daysOfWeek && startDate) setFormReady(true);
     else setFormReady(false);
-  }, [daysOfWeek, startTimeHr, endTimeHr, startDate]);
+  }, [daysOfWeek, startDate]);
 
-  const toggleDayinDaysOfWeek = (
-    e: React.MouseEvent<HTMLInputElement, MouseEvent>
-  ) => {
-    const { value, checked } = e.currentTarget;
-    if (!checked) {
-      setDaysOfWeek((prev) =>
-        prev.filter((day) => day !== (value as unknown as DayOfWeek))
-      );
+  // Add/remove day of week from state list
+  const toggleDayinDaysOfWeek = (day: DayOfWeek) => {
+    if (daysOfWeek.includes(day)) {
+      console.log(`${day} in daysOfWeek`);
+      setDaysOfWeek((prev) => prev.filter((d) => d !== day));
     } else {
-      setDaysOfWeek((prev) => [...prev, value as unknown as DayOfWeek]);
+      setDaysOfWeek((prev) => [...prev, day]);
     }
   };
+
+  // Setting hour value into a TimeSpan formatted string "HH:mm:ss"
+  function to24HrTime(hour: number, isPm: boolean): string {
+    let adjusted = hour % 12; // convert 12 -> 0
+    if (isPm) adjusted += 12;
+    return adjusted.toString().padStart(2, "0") + ":00:00";
+  }
 
   const onFormSubmit = async () => {
     try {
@@ -72,16 +84,12 @@ function SetAvailability() {
       setLoading(true);
 
       // Validate request arguments
-      if (endTimeHr < startTimeHr) {
-        throw Error("End time is set before start time!");
+      if (endTimeIsPm === startTimeIsPm) {
+        if (endTimeHr === startTimeHr)
+          throw Error("End time is the same as start time!");
+        if (endTimeHr < startTimeHr)
+          throw Error("End time is set before start time!");
       }
-
-      if (Number(endTimeHr) - Number(startTimeHr) < 1) {
-        throw Error(
-          "End time should be at least an hour after the start time!"
-        );
-      }
-
       if (endDate && endDate < startDate) {
         throw Error("End date is set before start date!");
       }
@@ -89,15 +97,15 @@ function SetAvailability() {
       const docAvailRequest: SetDoctorAvailRequest = {
         doctorId: id!!,
         daysOfWeek: daysOfWeek,
-        startTime: startTimeHr,
-        endTime: endTimeHr,
+        startTime: to24HrTime(startTimeHr, startTimeIsPm),
+        endTime: to24HrTime(endTimeHr, endTimeIsPm),
         startDate: startDate,
         endDate: endDate,
       };
 
       console.log(docAvailRequest);
-      await api.post("/availability", docAvailRequest);
-      navigate(-1);
+      // await api.post("/availability", docAvailRequest);
+      // navigate(-1);
     } catch (error: any) {
       const message = error.message || "Invalid inputs!";
       setErrors([message]);
@@ -134,109 +142,147 @@ function SetAvailability() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            // onFormSubmit();
+            onFormSubmit();
           }}
-          className="d-flex flex-column gap-1"
+          className="d-flex flex-column gap-4"
         >
-          <div className="d-flex flex-wrap gap-3">
-            <div className="d-flex gap-1">
-              <label>Monday</label>
-              <input
-                type="checkbox"
-                value={DayOfWeek.MONDAY}
-                onClick={(e) => toggleDayinDaysOfWeek(e)}
-                disabled={loading}
-              />
-            </div>
-            <div className="d-flex  gap-1">
-              <label>Tuesday</label>
-              <input
-                type="checkbox"
-                value={DayOfWeek.TUESDAY}
-                onClick={(e) => toggleDayinDaysOfWeek(e)}
-                disabled={loading}
-              />
-            </div>
-            <div className="d-flex gap-1">
-              <label>Wednesday</label>
-              <input
-                type="checkbox"
-                value={DayOfWeek.WEDNESDAY}
-                onClick={(e) => toggleDayinDaysOfWeek(e)}
-                disabled={loading}
-              />
-            </div>
-            <div className="d-flex gap-1">
-              <label>Thursday</label>
-              <input
-                type="checkbox"
-                value={DayOfWeek.THURSDAY}
-                onClick={(e) => toggleDayinDaysOfWeek(e)}
-                disabled={loading}
-              />
-            </div>
-            <div className="d-flex gap-1">
-              <label>Friday</label>
-              <input
-                type="checkbox"
-                value={DayOfWeek.FRIDAY}
-                onClick={(e) => toggleDayinDaysOfWeek(e)}
-                disabled={loading}
-              />
-            </div>
-          </div>
-
-          <label>Start Time</label>
-          <div className="d-flex gap-2 align-items-center">
-            <select onSelect={(e) => setStartTimeHr(e.currentTarget.value)}>
-              {AVAILABLE_HOURS.map((hr) => (
-                <option value={hr}>{hr}</option>
+          {/* DAYS OF WEEK */}
+          <div className="form-group">
+            <label className="form-label">Select days</label>
+            <div className="d-flex flex-wrap gap-1">
+              {DAYS_OF_WEEK_TO_LIST.map(([key, value]) => (
+                <button
+                  type="button"
+                  onClick={() => toggleDayinDaysOfWeek(value as DayOfWeek)}
+                  className={`btn btn-outline-secondary ${
+                    daysOfWeek.includes(value as DayOfWeek) && "active"
+                  }`}
+                  disabled={loading}
+                >
+                  {key}
+                </button>
               ))}
-            </select>
-            <label>:00</label>
-            <label htmlFor="StartTimeAM" defaultChecked>AM</label>
-            <input type="radio" name="StartTimeTOD" id="StartTimeAM" />
-            <label htmlFor="StartTimePM">PM</label>
-            <input type="radio" name="StartTimeTOD" id="StartTimePM" />
+            </div>
           </div>
 
-          <label>End Time</label>
-          <div className="d-flex gap-2 align-items-center">
-            <select onSelect={(e) => setEndTimeHr(e.currentTarget.value)}>
-              {AVAILABLE_HOURS.map((hr) => (
-                <option value={hr}>{hr}</option>
-              ))}
-            </select>
-            <label>:00</label>
-            <label htmlFor="EndTimeAM" defaultChecked>AM</label>
-            <input type="radio" name="EndTimeTOD" id="EndTimeAM" />
-            <label htmlFor="EndTimePM">PM</label>
-            <input type="radio" name="EndTimeTOD" id="EndTimePM" />
+          {/* START & END TIME */}
+          <div className="d-flex flex-wrap gap-5">
+            {/* START TIME */}
+            <div className="form-group">
+              <label className="form-label">Start Time</label>
+              <div className="d-flex flex-wrap align-items-center gap-2">
+                <select
+                  className="form-select-sm"
+                  onChange={(e) => setStartTimeHr(Number(e.target.value))}
+                  defaultValue={startTimeHr}
+                >
+                  {AVAILABLE_HOURS.map((hr) => (
+                    <option key={hr} value={hr}>
+                      {hr}:00
+                    </option>
+                  ))}
+                </select>
+
+                <div className="d-flex align-items-center gap-1">
+                  <input
+                    type="radio"
+                    name="StartTimeTOD"
+                    id="StartTimeAM"
+                    checked={!startTimeIsPm}
+                    onChange={() => setStartTimeIsPm(false)}
+                  />
+                  <label htmlFor="StartTimeAM" className="mb-0">
+                    AM
+                  </label>
+                </div>
+
+                <div className="d-flex align-items-center gap-1">
+                  <input
+                    type="radio"
+                    name="StartTimeTOD"
+                    id="StartTimePM"
+                    checked={startTimeIsPm}
+                    onChange={() => setStartTimeIsPm(true)}
+                  />
+                  <label htmlFor="StartTimePM" className="mb-0">
+                    PM
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* END TIME */}
+            <div className="form-group">
+              <label className="form-label">End Time</label>
+              <div className="d-flex flex-wrap align-items-center gap-2">
+                <select
+                  className="form-select-sm"
+                  onSelect={(e) => setEndTimeHr(Number(e.currentTarget.value))}
+                  defaultValue={endTimeHr}
+                >
+                  {AVAILABLE_HOURS.map((hr) => (
+                    <option key={hr} value={hr}>
+                      {hr}:00
+                    </option>
+                  ))}
+                </select>
+
+                <div className="d-flex align-items-center gap-1">
+                  <input
+                    type="radio"
+                    name="EndTimeTOD"
+                    id="EndTimeAM"
+                    checked={!endTimeIsPm}
+                    onChange={() => setEndTimeIsPm(false)}
+                  />
+                  <label className="form-label" htmlFor="EndTimeAM">
+                    AM
+                  </label>
+                </div>
+                <div className="d-flex align-items-center gap-1">
+                  <input
+                    type="radio"
+                    name="EndTimeTOD"
+                    id="EndTimePM"
+                    checked={endTimeIsPm}
+                    onChange={() => setEndTimeIsPm(true)}
+                  />
+                  <label className="form-label" htmlFor="EndTimePM">
+                    PM
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <label>Start Date</label>
-          <input
-            type="date"
-            className="form-control"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            disabled={loading}
-            
-          />
-          <label>End Date (optional)</label>
-          <input
-            type="date"
-            className="form-control"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            disabled={loading}
-          />
+          {/* START & END DATE */}
+          <div className="d-flex flex-wrap gap-5">
+            <div className="d-flex flex-column">
+              <label className="form-label">Start Date</label>
+              <input
+                type="date"
+                className="form-control"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+            <div className="d-flex flex-column">
+              <label className="form-label">End Date (optional)</label>
+              <input
+                type="date"
+                className="form-control"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+          </div>
 
           <button
             type="submit"
             className="btn btn-primary"
-            // disabled={!formReady || loading}
-              disabled
+            disabled={!formReady || loading}
           >
             Submit
           </button>
