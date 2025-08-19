@@ -38,7 +38,7 @@ export type ChangeUserRequest = {
 };
 
 export type SetDoctorAvailRequest = {
-  doctorId: string;
+  doctorId: number;
   daysOfWeek: DayOfWeek[];
   startTime: string;
   endTime: string;

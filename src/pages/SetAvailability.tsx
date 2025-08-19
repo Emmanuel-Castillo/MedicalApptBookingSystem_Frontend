@@ -41,7 +41,7 @@ function SetAvailability() {
   useEffect(() => {
     const getDocAvail = async () => {
       try {
-        const response = await api.get(`/availability/${id}`);
+        const response = await api.get(`/availability/current/${id}`);
         console.log(response.data);
         setAvailabilities(response.data);
       } catch (error: any) {
@@ -95,12 +95,12 @@ function SetAvailability() {
       }
 
       const docAvailRequest: SetDoctorAvailRequest = {
-        doctorId: id!!,
+        doctorId: Number(id!!),
         daysOfWeek: daysOfWeek,
         startTime: to24HrTime(startTimeHr, startTimeIsPm),
         endTime: to24HrTime(endTimeHr, endTimeIsPm),
         startDate: startDate,
-        endDate: endDate,
+        endDate: endDate ? endDate : undefined,
       };
 
       console.log(docAvailRequest);
@@ -114,6 +114,18 @@ function SetAvailability() {
     }
   };
 
+  function formatTimeString(time24h: string) {
+    const [hourString, minute, second] = time24h.split(':');
+    let hour = parseInt(hourString, 10);
+    const ampm = hour > 12 ? 'PM' : 'AM';
+
+    // Adjust hour for 12-hour format
+    hour = hour % 12
+    hour = hour === 0 ? 12 : hour; // Convert 0 (midnight) to 12
+
+    return `${hour}:${minute} ${ampm}`
+  }
+
   return (
     <div className="container mt-5 d-flex flex-column gap-3">
       <ErrorsBox errors={errors} />
@@ -123,16 +135,30 @@ function SetAvailability() {
         {availabilities.length === 0 ? (
           <p>No availability set.</p>
         ) : (
-          availabilities.map((a) => (
-            <div className="card">
-              <div className="card-body">
-                <p>{a.id}</p>
-                <p>{a.dayOfWeek}</p>
-                <p>{a.startTime}</p>
-                <p>{a.endTime}</p>
-              </div>
-            </div>
-          ))
+          <div className="table-responsive">
+            <table className="table table-bordered table-striped">
+              <thead className="table-dark">
+                <tr>
+                  <th>Day</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Starting</th>
+                  <th>Until</th>
+                </tr>
+              </thead>
+              <tbody>
+                {availabilities.map((a) => (
+                  <tr key={a.id}>
+                    <td>{a.dayOfWeek}</td>
+                    <td>{formatTimeString(a.startTime)}</td>
+                    <td>{formatTimeString(a.endTime)}</td>
+                    <td>{new Date(a.startDate).toLocaleDateString()}</td>
+                    <td>{a.endDate ? a.endDate : "--"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -166,7 +192,7 @@ function SetAvailability() {
           </div>
 
           {/* START & END TIME */}
-          <div className="d-flex flex-wrap gap-5">
+          <div className="d-flex flex-wrap gap-3">
             {/* START TIME */}
             <div className="form-group">
               <label className="form-label">Start Time</label>
@@ -235,7 +261,7 @@ function SetAvailability() {
                     checked={!endTimeIsPm}
                     onChange={() => setEndTimeIsPm(false)}
                   />
-                  <label className="form-label" htmlFor="EndTimeAM">
+                  <label className="mb-0" htmlFor="EndTimeAM">
                     AM
                   </label>
                 </div>
@@ -247,7 +273,7 @@ function SetAvailability() {
                     checked={endTimeIsPm}
                     onChange={() => setEndTimeIsPm(true)}
                   />
-                  <label className="form-label" htmlFor="EndTimePM">
+                  <label className="mb-0" htmlFor="EndTimePM">
                     PM
                   </label>
                 </div>
@@ -256,7 +282,7 @@ function SetAvailability() {
           </div>
 
           {/* START & END DATE */}
-          <div className="d-flex flex-wrap gap-5">
+          <div className="d-flex flex-wrap gap-3">
             <div className="d-flex flex-column">
               <label className="form-label">Start Date</label>
               <input

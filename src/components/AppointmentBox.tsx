@@ -4,15 +4,16 @@ import { AppointmentDto } from "../types/dtos";
 type AppointmentBoxProps = {
   appt: AppointmentDto;
   showNotes?: boolean;
+  title?: string;
 };
 
-function AppointmentBox({ appt, showNotes }: AppointmentBoxProps) {
+function AppointmentBox({ appt, showNotes, title }: AppointmentBoxProps) {
   const { patient, timeSlot, notes } = appt;
   const { doctor, endTime, startTime } = timeSlot;
   return (
     <div className="card shadow-sm">
       <div className="card-body">
-        <h3 className="card-title mb-4">Appointment Details</h3>
+        <h3 className="card-title mb-4">{title || "Appointment Details"}</h3>
 
         <div className="mb-3">
           <h5 className="mb-1 text-secondary">Patient</h5>

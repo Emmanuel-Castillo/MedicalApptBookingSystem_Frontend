@@ -13,6 +13,8 @@ import Home from "./pages/Home";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import EditUser from "./pages/EditUser";
 import SetAvailability from "./pages/SetAvailability";
+import TimeSlotDetails from "./pages/TimeSlotDetails";
+import AllTimeSlots from "./pages/AllTimeSlots";
 
 function App() {
   return (
@@ -40,9 +42,27 @@ function App() {
               }
             />
 
+            {/* VIEW ALL TIME SLOTS */}
+            <Route
+              path="/timeSlots/all/:doctorId"
+              element={<PrivateRoute allowedRoles={["Admin", "Doctor"]}>
+                <AllTimeSlots/>
+              </PrivateRoute>}
+            />
+
+            {/* VIEW TIME SLOT */}
+            <Route
+              path="/timeSlots/:timeSlotId"
+              element={
+                <PrivateRoute allowedRoles={["Admin", "Doctor"]}>
+                  <TimeSlotDetails/>
+                </PrivateRoute>
+              }
+            />
+
             {/* CREATE TIMESLOTS PAGE */}
             <Route
-              path="/timeSlots/:doctorId"
+              path="/timeSlots/create/:doctorId"
               element={
                 <PrivateRoute allowedRoles={["Admin", "Doctor"]}>
                   <CreateTimeSlots />

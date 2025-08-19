@@ -20,6 +20,7 @@ function PatientDetails() {
   const [loadingData, setLoadingData] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedAppt, setSelectedAppt] = useState<AppointmentDto | null>(null);
+  const [errors, setErrors] = useState<string[]>([])
 
   const navigate = useNavigate();
 
@@ -38,8 +39,10 @@ function PatientDetails() {
 
         const response = await api.get(`/users/patients/${patientId}`);
         setData(response.data);
-      } catch (error) {
-        console.error("Failed to fetch user details:", error);
+      } catch (error: any) {
+        const serverMessage =
+          error.response.data || error.message || "Appointment booking failed!";
+        setErrors([serverMessage]);
       } finally {
         setLoadingData(false);
       }
@@ -61,8 +64,15 @@ function PatientDetails() {
     setShowModal(true);
   };
 
-  const confirmDeleteApptInModal = () => {
-    console.log(selectedAppt);
+  const confirmDeleteApptInModal = async (appt: AppointmentDto) => {
+    try {
+      await api.delete(`appointments/${appt.id}`)
+      navigate(0)
+    } catch (error: any) {
+      const serverMessage =
+          error.response.data || error.message || "Appointment booking failed!";
+        setErrors([serverMessage]);
+    }
   };
 
   return (
@@ -73,7 +83,7 @@ function PatientDetails() {
           body={<AppointmentBox appt={selectedAppt} />}
           confirmText={"Yes, Delete It"}
           onCancel={() => setShowModal(false)}
-          onConfirm={confirmDeleteApptInModal}
+          onConfirm={() => confirmDeleteApptInModal(selectedAppt)}
         />
       )}
 
