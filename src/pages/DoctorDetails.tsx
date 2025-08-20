@@ -10,20 +10,22 @@ import TimeSlotTable from "../components/TimeSlotTable";
 import Modal from "../components/Modal";
 import { TimeSlotDto } from "../types/dtos";
 import TimeSlotCard from "../components/TimeSlotCard";
+import ErrorsBox from "../components/ErrorsBox";
 
 // Component accessible for Doctors and Admins ONLY
 function DoctorDetails() {
   const { id } = useParams();
   const { user, loadingUser } = useAuth();
+  const navigate = useNavigate();
 
   const [data, setData] = useState<GetDoctorInfoResponse | null>(null);
   const [loadingData, setLoadingData] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedTS, setSelectedTS] = useState<TimeSlotDto | null>();
   const [errors, setErrors] = useState<string[]>([])
-  const navigate = useNavigate();
 
   // Fetch doctor's information once user has been loaded
+  // getDoctorDetails requires user to not be null, and to check it's role and id
   useEffect(() => {
     const getDoctorDetails = async () => {
       try {
@@ -41,7 +43,7 @@ function DoctorDetails() {
       } catch (error: any) {
         console.error("Failed to fetch user details:", error);
         const serverMessage =
-        error.response.data || error.message || "Appointment booking failed!";
+        error.response.data || error.message || "Fetching doctor's data failed!";
       setErrors([serverMessage]);
       } finally {
         setLoadingData(false);
@@ -56,6 +58,8 @@ function DoctorDetails() {
   if (loadingData) return <div>Loading doctor details...</div>;
   if (!data) return <div>Doctor details not found!</div>;
 
+  // Callback function to delete time slot
+  // Refreshes page once it's done
   const deleteTimeSlot = async (timeSlotId: number) => {
     try {
       await api.delete(`/timeslots/${timeSlotId}`)
@@ -80,6 +84,8 @@ function DoctorDetails() {
           onConfirm={() => {deleteTimeSlot(selectedTS.id)}}
         />
       )}
+
+      <ErrorsBox errors={errors}/>
 
       <div className="bg-light p-3 rounded border mb-5">
         <div className="d-flex flex-wrap align-items-center mb-3">
@@ -121,7 +127,7 @@ function DoctorDetails() {
             </button>
           </div>
         </div>
-        <h6>Booked - Upcoming</h6>
+        <h6>Booked - This Week</h6>
         <TimeSlotTable timeSlots={timeSlots.filter((ts) => ts.isBooked)} />
       </div>
 

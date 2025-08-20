@@ -2,23 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
-import { TimeSlotDto } from "../types/dtos";
+import { AppointmentDto, TimeSlotDto } from "../types/dtos";
 import TimeSlotTable from "../components/TimeSlotTable";
 import ErrorsBox from "../components/ErrorsBox";
 import Modal from "../components/Modal";
 import TimeSlotCard from "../components/TimeSlotCard";
-import { GetDoctorsTimeSlotsResponse } from "../types/responses";
+import { GetPatientsAppointmentsResponse } from "../types/responses";
+import AppointmentBox from "../components/AppointmentBox";
+import AppointmentTable from "../components/AppointmentTable";
 
-function AllTimeSlots() {
-  const { doctorId } = useParams();
+function AllAppointments() {
+  const { patientId } = useParams();
   const { user, loadingUser } = useAuth();
   const navigate = useNavigate();
 
-  const [timeSlotsData, setTimeSlotsData] =
-    useState<GetDoctorsTimeSlotsResponse | null>();
+  const [appointmentsData, setAppointmentsData] =
+    useState<GetPatientsAppointmentsResponse | null>();
   const [loadingData, setLoadingData] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
-  const [selectedTS, setSelectedTS] = useState<TimeSlotDto | null>();
+  const [selectedAppt, setSelectedAppt] = useState<AppointmentDto | null>();
   const [showModal, setShowModal] = useState(false);
 
   // API time slot pagination states
@@ -27,13 +29,13 @@ function AllTimeSlots() {
 
   // Callback function to retrieve list of time slots
   // using page # and page size
-  const fetchPageOfAllTimeSlots = async () => {
+  const fetchPageOfAllAppts = async () => {
       try {
-        if (!doctorId) return
+        if (!patientId) return
         const response = await api.get(
-          `/timeslots/all/${doctorId}?pageNumber=${page}&pageSize=${pageSize}`
+          `/users/${patientId}/appointments?pageNumber=${page}&pageSize=${pageSize}`
         );
-        setTimeSlotsData(response.data);
+        setAppointmentsData(response.data);
       } catch (error: any) {
         console.log(error);
         const serverMessage =
@@ -45,20 +47,20 @@ function AllTimeSlots() {
     };
 
   // Fetch api data when component is mounted
-  // Grabs the first 10 time slots from all 
+  // Grabs the first 10 appointments from all 
   useEffect(() => {
-    if (!doctorId) return;
-    fetchPageOfAllTimeSlots();
+    if (!patientId) return;
+    fetchPageOfAllAppts();
   }, []);
 
-  // When request prev or next page of time slots, fetch time slots using same function
+  // When request prev or next page, refetch different page of data
   useEffect(() => {
-    fetchPageOfAllTimeSlots()
+    fetchPageOfAllAppts()
   }, [page, pageSize]);
 
-  const deleteTimeSlot = async (timeSlotId: number) => {
+  const deleteTimeSlot = async (apptId: number) => {
     try {
-      await api.delete(`/timeslots/${timeSlotId}`);
+      await api.delete(`/appointments/${apptId}`);
       navigate(0);
     } catch (error: any) {
       const serverMessage =
@@ -70,27 +72,27 @@ function AllTimeSlots() {
   if (loadingUser) return <p>Loading user...</p>;
   if (!user) return <p>User not found!</p>;
   if (loadingData) return <p>Loading time slot data...</p>;
-  if (!timeSlotsData) return <p>Time slot data not found!</p>;
+  if (!appointmentsData) return <p>Time slot data not found!</p>;
 
-  const { timeSlotDtos, totalCount } = timeSlotsData;
+  const { appointmentDtos, totalCount } = appointmentsData;
 
   return (
     <div className="mt-5">
       <ErrorsBox errors={errors} />
-      {showModal && selectedTS && (
+      {showModal && selectedAppt && (
         <Modal
-          title={"Delete Time Slot"}
-          body={<TimeSlotCard timeSlot={selectedTS} />}
+          title={"Delete Appointment"}
+          body={<AppointmentBox appt={selectedAppt}/>}
           confirmText={"Yes, Delete It"}
           onCancel={() => setShowModal(false)}
           onConfirm={() => {
-            deleteTimeSlot(selectedTS.id);
+            deleteTimeSlot(selectedAppt.id);
           }}
         />
       )}
 
       <div className="d-flex flex-wrap mb-3">
-        <h2 className="me-5">All Time Slots</h2>
+        <h2 className="me-5">All Appointments</h2>
         <div className="d-flex gap-2">
           <button
             className="btn btn-outline-primary"
@@ -109,15 +111,15 @@ function AllTimeSlots() {
         </div>
       </div>
 
-      <TimeSlotTable
-        timeSlots={timeSlotDtos}
-        deleteAction={(ts: TimeSlotDto) => {
-          setSelectedTS(ts);
-          setShowModal(true);
+      <AppointmentTable
+        appointments={appointmentDtos}
+        deleteAction={(appt: AppointmentDto) => {
+            setSelectedAppt(appt)
+            setShowModal(true)
         }}
       />
     </div>
   );
 }
 
-export default AllTimeSlots;
+export default AllAppointments;

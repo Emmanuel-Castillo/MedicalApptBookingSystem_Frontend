@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { AppointmentDto } from "../types/dtos";
 import Modal from "../components/Modal";
 import AppointmentBox from "../components/AppointmentBox";
+import AppointmentTable from "../components/AppointmentTable";
 
 // Component accessible for Patients and Admins ONLY
 function PatientDetails() {
@@ -20,7 +21,7 @@ function PatientDetails() {
   const [loadingData, setLoadingData] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedAppt, setSelectedAppt] = useState<AppointmentDto | null>(null);
-  const [errors, setErrors] = useState<string[]>([])
+  const [errors, setErrors] = useState<string[]>([]);
 
   const navigate = useNavigate();
 
@@ -66,12 +67,12 @@ function PatientDetails() {
 
   const confirmDeleteApptInModal = async (appt: AppointmentDto) => {
     try {
-      await api.delete(`appointments/${appt.id}`)
-      navigate(0)
+      await api.delete(`appointments/${appt.id}`);
+      navigate(0);
     } catch (error: any) {
       const serverMessage =
-          error.response.data || error.message || "Appointment booking failed!";
-        setErrors([serverMessage]);
+        error.response.data || error.message || "Appointment booking failed!";
+      setErrors([serverMessage]);
     }
   };
 
@@ -87,12 +88,12 @@ function PatientDetails() {
         />
       )}
 
-      <div className="gap-1 bg-light p-3 rounded-3">
-        <div className="d-flex gap-2">
-          <h2>User Details</h2>
+      <div className="bg-light p-3 rounded border mb-5">
+        <div className="d-flex flex-wrap align-items-center mb-3">
+          <h2 className="me-5">User Details</h2>
           {user.role == "Admin" && (
             <button
-              className="btn btn-primary mb-3"
+              className="btn btn-primary"
               onClick={() => navigate(`/editUser/${patient.id}`)}
             >
               Edit User
@@ -102,59 +103,30 @@ function PatientDetails() {
         <UserDetails user={patient} />
       </div>
 
-      <div className="d-flex gap-2">
-        <h4>Appointments</h4>
-        <button
-          className="btn btn-primary"
-          onClick={() => navigate(`/book/${patient.id}`)}
-        >
-          Create New
-        </button>
+      <div className="col">
+        <div className="d-flex flex-wrap mb-2 align-items-center mb-3">
+          <h4 className="me-4">Appointments</h4>
+          <div className="d-flex flex-wrap gap-2">
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate(`/book/${patient.id}`)}
+            >
+              Create New
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate(`/users/${patient.id}/appointments`)}
+            >
+              View All
+            </button>
+          </div>
+        </div>
+        <h6>Booked - This Week</h6>
+        <AppointmentTable
+          appointments={appointments}
+          deleteAction={(appt: AppointmentDto) => onClickDeleteAppt(appt)}
+        />
       </div>
-
-      {appointments.length == 0 ? (
-        <div className="bg-light p-3 rounded mb-4 border">
-          <p>No appointments found.</p>
-        </div>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-bordered table-striped">
-            <thead className="table-dark">
-              <tr>
-                <th>#</th>
-                <th>Doctor</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.map((appt, idx) => (
-                <tr key={appt.id}>
-                  <td>{idx + 1}</td>
-                  <td>{appt.timeSlot.doctor.fullName}</td>
-                  <td>{new Date(appt.timeSlot.startTime).toLocaleString()}</td>
-                  <td>{new Date(appt.timeSlot.endTime).toLocaleString()}</td>
-                  <td className="d-flex justify-content-center gap-2">
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() => navigate(`/appointments/${appt.id}`)}
-                    >
-                      View
-                    </button>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => onClickDeleteAppt(appt)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 }

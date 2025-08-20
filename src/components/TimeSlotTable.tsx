@@ -6,8 +6,9 @@ type TimeSlotTableProps = {
   timeSlots: TimeSlotDto[];
   deleteAction?: (ts: TimeSlotDto) => void;
 };
+
 function TimeSlotTable({ timeSlots, deleteAction }: TimeSlotTableProps) {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   if (timeSlots.length == 0)
     return (
       <div className="bg-light p-3 rounded mb-4 border">
@@ -34,11 +35,17 @@ function TimeSlotTable({ timeSlots, deleteAction }: TimeSlotTableProps) {
               <td>{new Date(ts.endTime).toLocaleString()}</td>
               <td>{ts.isBooked ? "Yes" : "No"}</td>
               <td className="d-flex justify-content-center gap-2">
-                <button className="btn btn-secondary" onClick={() => navigate(`/timeSlots/${ts.id}`)}>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => navigate(`/timeSlots/${ts.id}`)}
+                >
                   View
                 </button>
                 {!ts.isBooked && deleteAction && (
-                  <button className="btn btn-danger" onClick={() => deleteAction(ts)}>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => deleteAction(ts)}
+                  >
                     Delete
                   </button>
                 )}

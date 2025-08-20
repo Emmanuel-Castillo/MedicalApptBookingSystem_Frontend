@@ -15,7 +15,12 @@ export type GetTimeSlotResponse = {
     appointment?: AppointmentDto;
 }
 
-export type GetAllTimeSlotsResponse = {
+export type GetDoctorsTimeSlotsResponse = {
     timeSlotDtos: TimeSlotDto[];
+    totalCount: number;
+}
+
+export type GetPatientsAppointmentsResponse = {
+    appointmentDtos: AppointmentDto[];
     totalCount: number;
 }

@@ -15,6 +15,7 @@ import EditUser from "./pages/EditUser";
 import SetAvailability from "./pages/SetAvailability";
 import TimeSlotDetails from "./pages/TimeSlotDetails";
 import AllTimeSlots from "./pages/AllTimeSlots";
+import AllAppointments from "./pages/AllApppointments";
 
 function App() {
   return (
@@ -86,6 +87,16 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={["Admin", "Patient"]}>
                   <AppointmentDetails />
+                </PrivateRoute>
+              }
+            />
+
+            {/* VIEW PATIENT'S APPOINTMENTS */}
+            <Route
+              path="/users/:patientId/appointments"
+              element={
+                <PrivateRoute allowedRoles={["Admin", "Patient"]}>
+                  <AllAppointments/>
                 </PrivateRoute>
               }
             />
