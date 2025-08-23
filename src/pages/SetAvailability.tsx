@@ -9,9 +9,9 @@ const AVAILABLE_HOURS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 function SetAvailability() {
   const { id } = useParams();
-  const [availabilities, setAvailabilities] = useState<DoctorAvailabilityDto[]>(
-    []
-  );
+  const navigate = useNavigate();
+
+  const [availabilityThisWeek, setAvailabilityThisWeek] = useState<DoctorAvailabilityDto[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [daysOfWeek, setDaysOfWeek] = useState<DayOfWeek[]>([]);
   const [startTimeHr, setStartTimeHr] = useState(6); // Default start time is 6:00AM
@@ -23,7 +23,6 @@ function SetAvailability() {
   const [formReady, setFormReady] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
   const DAYS_OF_WEEK_TO_LIST = Object.entries(DayOfWeek).filter(
     ([key, value]) => typeof value === "number"
   );
@@ -37,13 +36,13 @@ function SetAvailability() {
   //     endDate?: string;
   //   };
 
-  // Fetch doctor's current availability
+  // Fetch doctor's availability for the current week
   useEffect(() => {
     const getDocAvail = async () => {
       try {
-        const response = await api.get(`/availability/current/${id}`);
+        const response = await api.get(`doctors/${id}/availability/thisweek`);
         console.log(response.data);
-        setAvailabilities(response.data);
+        setAvailabilityThisWeek(response.data);
       } catch (error: any) {
         const serverMessage =
           error.response.data || error.message || "Appointment booking failed!";
@@ -71,8 +70,9 @@ function SetAvailability() {
     }
   };
 
-  // Setting hour value into a TimeSpan formatted string "HH:mm:ss"
-  function to24HrTime(hour: number, isPm: boolean): string {
+  // Utility function to setup Dto
+  // Setting hour value into a formatted string "HH:mm:ss"
+  function formatTimeForDto(hour: number, isPm: boolean): string {
     let adjusted = hour % 12; // convert 12 -> 0
     if (isPm) adjusted += 12;
     return adjusted.toString().padStart(2, "0") + ":00:00";
@@ -97,8 +97,8 @@ function SetAvailability() {
       const docAvailRequest: SetDoctorAvailRequest = {
         doctorId: Number(id!!),
         daysOfWeek: daysOfWeek,
-        startTime: to24HrTime(startTimeHr, startTimeIsPm),
-        endTime: to24HrTime(endTimeHr, endTimeIsPm),
+        startTime: formatTimeForDto(startTimeHr, startTimeIsPm),
+        endTime: formatTimeForDto(endTimeHr, endTimeIsPm),
         startDate: startDate,
         endDate: endDate ? endDate : undefined,
       };
@@ -114,16 +114,17 @@ function SetAvailability() {
     }
   };
 
-  function formatTimeString(time24h: string) {
-    const [hourString, minute, second] = time24h.split(':');
+  // Utility function to display received availability times to AM/PM format
+  function formatGivenTime(time24h: string) {
+    const [hourString, minute, second] = time24h.split(":");
     let hour = parseInt(hourString, 10);
-    const ampm = hour > 12 ? 'PM' : 'AM';
+    const ampm = hour > 12 ? "PM" : "AM";
 
     // Adjust hour for 12-hour format
-    hour = hour % 12
+    hour = hour % 12;
     hour = hour === 0 ? 12 : hour; // Convert 0 (midnight) to 12
 
-    return `${hour}:${minute} ${ampm}`
+    return `${hour}:${minute} ${ampm}`;
   }
 
   return (
@@ -131,8 +132,8 @@ function SetAvailability() {
       <ErrorsBox errors={errors} />
 
       <div className="d-flex flex-column gap-3 bg-light p-3 rounded border">
-        <h3>Current Availability</h3>
-        {availabilities.length === 0 ? (
+        <h3>Availability - This Week</h3>
+        {availabilityThisWeek.length === 0 ? (
           <p>No availability set.</p>
         ) : (
           <div className="table-responsive">
@@ -147,11 +148,11 @@ function SetAvailability() {
                 </tr>
               </thead>
               <tbody>
-                {availabilities.map((a) => (
+                {availabilityThisWeek.map((a) => (
                   <tr key={a.id}>
                     <td>{a.dayOfWeek}</td>
-                    <td>{formatTimeString(a.startTime)}</td>
-                    <td>{formatTimeString(a.endTime)}</td>
+                    <td>{formatGivenTime(a.startTime)}</td>
+                    <td>{formatGivenTime(a.endTime)}</td>
                     <td>{new Date(a.startDate).toLocaleDateString()}</td>
                     <td>{a.endDate ? a.endDate : "--"}</td>
                   </tr>

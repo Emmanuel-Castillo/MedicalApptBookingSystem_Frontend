@@ -15,48 +15,44 @@ import ErrorsBox from "../components/ErrorsBox";
 // Component accessible for Doctors and Admins ONLY
 function DoctorDetails() {
   const { id } = useParams();
-  const { user, loadingUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [data, setData] = useState<GetDoctorInfoResponse | null>(null);
-  const [loadingData, setLoadingData] = useState(true);
+  const [doctorInfo, setDoctorInfo] = useState<GetDoctorInfoResponse | null>(null);
+  const [loadingDoctorInfo, setLoadingDoctorInfo] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedTS, setSelectedTS] = useState<TimeSlotDto | null>();
   const [errors, setErrors] = useState<string[]>([])
 
   // Fetch doctor's information once user has been loaded
-  // getDoctorDetails requires user to not be null, and to check it's role and id
+  // getDoctorDetails requires user to not be null, and to check the user's role and id
   useEffect(() => {
     const getDoctorDetails = async () => {
       try {
-        if (!user) return null;
-
         let doctorId: string;
 
         // If admin, assign URL id param to doctorId
-        if (user.role == "Admin" && id != null) doctorId = id;
+        if (user!.role == "Admin" && id != null) doctorId = id;
         // Else, assign the curr user id to doctorId
-        else doctorId = user.id;
+        else doctorId = user!.id;
 
-        const response = await api.get(`/users/doctors/${doctorId}`);
-        setData(response.data);
+        const response = await api.get(`/doctors/${doctorId}`);
+        setDoctorInfo(response.data as GetDoctorInfoResponse);
       } catch (error: any) {
         console.error("Failed to fetch user details:", error);
         const serverMessage =
         error.response.data || error.message || "Fetching doctor's data failed!";
       setErrors([serverMessage]);
       } finally {
-        setLoadingData(false);
+        setLoadingDoctorInfo(false);
       }
     };
 
-    if (user) getDoctorDetails();
-  }, [user]);
+    getDoctorDetails();
+  }, []);
 
-  if (loadingUser) return <p>Loading user...</p>;
-  if (!user) return <p>User not found!</p>;
-  if (loadingData) return <div>Loading doctor details...</div>;
-  if (!data) return <div>Doctor details not found!</div>;
+  if (loadingDoctorInfo) return <div>Loading doctor details...</div>;
+  if (!doctorInfo) return <div>Doctor details not found!</div>;
 
   // Callback function to delete time slot
   // Refreshes page once it's done
@@ -71,7 +67,7 @@ function DoctorDetails() {
     }
   }
 
-  const { doctor, timeSlots } = data;
+  const { doctor, upcomingTimeSlots } = doctorInfo;
 
   return (
     <div className="d-flex flex-column gap-3">
@@ -90,16 +86,15 @@ function DoctorDetails() {
       <div className="bg-light p-3 rounded border mb-5">
         <div className="d-flex flex-wrap align-items-center mb-3">
           <h2 className="me-5">User Details</h2>
-          {user.role == "Admin" && (
+          {user!.role == "Admin" && (
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/editUser/${doctor.id}`)}
+              onClick={() => navigate(`users/${doctor.id}/edit-user`)}
             >
               Edit User
             </button>
           )}
         </div>
-
         <UserDetails user={doctor} />
       </div>
 
@@ -109,32 +104,32 @@ function DoctorDetails() {
           <div className="d-flex flex-wrap gap-2">
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/timeSlots/all/${doctor.id}`)}
+              onClick={() => navigate(`/doctors/${doctor.id}/timeSlots`)}
             >
               View All
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/timeslots/create/${doctor.id}`)}
+              onClick={() => navigate(`/doctors/${doctor.id}/timeSlots/create`)}
             >
               Create New
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/availability/${doctor.id}`)}
+              onClick={() => navigate(`/doctors/${doctor.id}/availability`)}
             >
               Set Availability
             </button>
           </div>
         </div>
-        <h6>Booked - This Week</h6>
-        <TimeSlotTable timeSlots={timeSlots.filter((ts) => ts.isBooked)} />
+        <h6>Booked - Next 7 Days</h6>
+        <TimeSlotTable timeSlots={upcomingTimeSlots.filter((ts) => ts.isBooked)} />
       </div>
 
       <div className="col">
-        <h6>All - This Week</h6>
+        <h6>All - Next 7 Days</h6>
         <TimeSlotTable
-          timeSlots={timeSlots}
+          timeSlots={upcomingTimeSlots}
           deleteAction={(ts: TimeSlotDto) => {
             setShowModal(true);
             setSelectedTS(ts);

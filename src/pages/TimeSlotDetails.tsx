@@ -9,7 +9,7 @@ import { GetTimeSlotResponse } from "../types/responses";
 import AppointmentBox from "../components/AppointmentBox";
 
 function TimeSlotDetails() {
-  const { timeSlotId } = useParams();
+  const { id } = useParams();
   const { user, loadingUser } = useAuth();
 
   const [timeSlotData, setTimeSlotData] = useState<GetTimeSlotResponse | null>(
@@ -21,7 +21,7 @@ function TimeSlotDetails() {
   useEffect(() => {
     const fetchApptData = async () => {
       try {
-        const response = await api.get(`/timeslots/${timeSlotId}`);
+        const response = await api.get(`/timeslots/${id}`);
         setTimeSlotData(response.data as GetTimeSlotResponse);
       } catch (error: any) {
         console.log(error);

@@ -44,12 +44,11 @@ function Login() {
     // Login user
     try {
       const dto: UserLoginDto = {
-        email: email,
-        password: password,
+        Email: email,
+        Password: password,
       };
 
       const response = await api.post("/auth/login", dto);
-
       const token = response.data.token;
 
       // Decode JWT token to retrieve user data

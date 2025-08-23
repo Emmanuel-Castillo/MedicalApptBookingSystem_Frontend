@@ -6,7 +6,9 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 
 function CreateTimeSlots() {
-  const { doctorId } = useParams();
+  const { id } = useParams();
+  const { user } = useAuth();
+
   const [startTime, setStartTime] = useState<string>("");
   const [endTime, setEndTime] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -14,6 +16,7 @@ function CreateTimeSlots() {
 
   const navigate = useNavigate();
 
+  // Set endTime to be an hour after startTime
   useEffect(() => {
     if (!startTime) {
       setEndTime("");
@@ -32,11 +35,8 @@ function CreateTimeSlots() {
     setEndTime(formattedEndTime);
   }, [startTime]);
 
-  const { user, loadingUser } = useAuth();
 
-  if (loadingUser) return <p>Loading user...</p>
-  if (!user) return <p>User not found!</p>;
-
+  // Send CreateTimeSlotRequest Dto to backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // console.log("Start Time:", startTime);
@@ -48,7 +48,7 @@ function CreateTimeSlots() {
       const body: CreateTimeSlotRequest = {
         StartTime: startTime + ":00", // e.g., "2025-08-04T16:20:00"
         EndTime: endTime + ":00",
-        DoctorId: user.role == "Admin" ? doctorId : undefined,
+        DoctorId: user!.role == "Admin" ? id : undefined,
       };
       await api.post("/timeslots", body);
       navigate("/");

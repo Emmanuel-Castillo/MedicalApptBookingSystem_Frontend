@@ -45,7 +45,7 @@ function App() {
 
             {/* VIEW ALL TIME SLOTS */}
             <Route
-              path="/timeSlots/all/:doctorId"
+              path="/doctors/:id/timeSlots"
               element={<PrivateRoute allowedRoles={["Admin", "Doctor"]}>
                 <AllTimeSlots/>
               </PrivateRoute>}
@@ -53,7 +53,7 @@ function App() {
 
             {/* VIEW TIME SLOT */}
             <Route
-              path="/timeSlots/:timeSlotId"
+              path="/timeSlots/:id"
               element={
                 <PrivateRoute allowedRoles={["Admin", "Doctor"]}>
                   <TimeSlotDetails/>
@@ -63,7 +63,7 @@ function App() {
 
             {/* CREATE TIMESLOTS PAGE */}
             <Route
-              path="/timeSlots/create/:doctorId"
+              path="doctors/:id/timeSlots/create"
               element={
                 <PrivateRoute allowedRoles={["Admin", "Doctor"]}>
                   <CreateTimeSlots />
@@ -93,7 +93,7 @@ function App() {
 
             {/* VIEW PATIENT'S APPOINTMENTS */}
             <Route
-              path="/users/:patientId/appointments"
+              path="/patients/:id/appointments"
               element={
                 <PrivateRoute allowedRoles={["Admin", "Patient"]}>
                   <AllAppointments/>
@@ -103,7 +103,7 @@ function App() {
 
             {/* BOOK APPOINTMENTS PAGE */}
             <Route
-              path="/book/:patientId"
+              path="patients/:id/book-appointment"
               element={
                 <PrivateRoute allowedRoles={["Admin", "Patient"]}>
                   <BookAppointment />
@@ -113,7 +113,7 @@ function App() {
 
             {/* EDIT USER */}
             <Route
-              path="/editUser/:userId"
+              path="/users/:id/edit-user"
               element={
                 <PrivateRoute allowedRoles={['Admin']}>
                   <EditUser />
@@ -123,7 +123,7 @@ function App() {
 
             {/* SET DOCTOR'S AVAILABILITY */}
             <Route
-              path="/availability/:id"
+              path="doctors/:id/availability"
               element={
                 <PrivateRoute allowedRoles={['Admin', 'Doctor']}>
                   <SetAvailability/>

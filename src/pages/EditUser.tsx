@@ -6,7 +6,9 @@ import ErrorsBox from "../components/ErrorsBox";
 import { ChangeUserRequest } from "../types/requests";
 
 function EditUser() {
-  const { userId } = useParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [loadingUserDto, setLoadingUserDto] = useState(true);
   const [formFullName, setFormFullName] = useState("");
   const [formEmail, setFormEmail] = useState("");
@@ -15,12 +17,11 @@ function EditUser() {
   const [changedCred, setChangedCred] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const navigate = useNavigate();
-
+  // Grab User info
   useEffect(() => {
     const grabUserDetails = async () => {
       try {
-        const response = await api.get(`/users/${userId}`);
+        const response = await api.get(`/users/${id}`);
         const userDto = response.data as UserDto;
         setOriginalFullName(userDto.fullName);
         setOriginalEmail(userDto.email);
@@ -39,6 +40,7 @@ function EditUser() {
     grabUserDetails();
   }, []);
 
+  // Set changedCred if form credentials are different than the original. Otherwise, reset changedCred
   useEffect(() => {
     setChangedCred(
       formFullName !== originalFullName || formEmail !== originalEmail
@@ -51,7 +53,7 @@ function EditUser() {
   const onFormSubmit = async () => {
     try {
       const changeUserRequest: ChangeUserRequest = {
-        id: userId!!,
+        id: id!!,
         newFullName: formFullName,
         newEmail: formEmail,
       };

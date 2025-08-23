@@ -6,12 +6,9 @@ import PatientDetails from "./PatientDetails";
 import { Navigate } from "react-router-dom";
 
 function Home() {
-  const { user, loadingUser } = useAuth();
+  const { user } = useAuth();
 
-  if (loadingUser) return <p>Loading user...</p>
-  if (!user) return <Navigate to={"/login"}/>
-
-  switch (user.role) {
+  switch (user!.role) {
     case "Admin":
       return <AdminDashboard />;
     case "Doctor":

@@ -6,7 +6,7 @@ import { UserDto, UserRole } from "../types/dtos";
 import ErrorsBox from "../components/ErrorsBox";
 
 function AdminDashboard() {
-  const { user, loadingUser } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [users, setUsers] = useState<UserDto[]>([]);
@@ -16,7 +16,7 @@ function AdminDashboard() {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const response = await api.get("users/all");
+        const response = await api.get("users");
         setUsers(response.data);
       } catch (error: any) {
         console.log(error);
@@ -30,11 +30,6 @@ function AdminDashboard() {
 
     getUsers();
   }, []);
-
-  if (loadingUser) return <p>Loading user data...</p>;
-  if (!user) return <p>No user data found!</p>;
-
-  const { fullName } = user;
 
   const handleUserClick = (user: UserDto) => {
     switch (user.role) {
@@ -57,7 +52,7 @@ function AdminDashboard() {
       <ErrorsBox errors={errors}/>
 
       <div className="d-flex mb-4">
-        <h2>Welcome, {fullName}!</h2>
+        <h2>Welcome, {user!.fullName}!</h2>
       </div>
 
       <div className="card shadow-sm">

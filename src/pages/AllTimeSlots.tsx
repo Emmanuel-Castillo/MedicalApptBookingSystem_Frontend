@@ -10,13 +10,12 @@ import TimeSlotCard from "../components/TimeSlotCard";
 import { GetDoctorsTimeSlotsResponse } from "../types/responses";
 
 function AllTimeSlots() {
-  const { doctorId } = useParams();
-  const { user, loadingUser } = useAuth();
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const [timeSlotsData, setTimeSlotsData] =
+  const [timeSlotData, setTimeSlotData] =
     useState<GetDoctorsTimeSlotsResponse | null>();
-  const [loadingData, setLoadingData] = useState(true);
+  const [loadingTimeSlotData, setLoadingTimeSlotData] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
   const [selectedTS, setSelectedTS] = useState<TimeSlotDto | null>();
   const [showModal, setShowModal] = useState(false);
@@ -29,25 +28,23 @@ function AllTimeSlots() {
   // using page # and page size
   const fetchPageOfAllTimeSlots = async () => {
       try {
-        if (!doctorId) return
         const response = await api.get(
-          `/timeslots/all/${doctorId}?pageNumber=${page}&pageSize=${pageSize}`
+          `doctors/${id}/timeslots?pageNumber=${page}&pageSize=${pageSize}`
         );
-        setTimeSlotsData(response.data);
+        setTimeSlotData(response.data);
       } catch (error: any) {
         console.log(error);
         const serverMessage =
           error.response.data || error.message || "Fetching all time slots failed!";
         setErrors([serverMessage]);
       } finally {
-        setLoadingData(false);
+        setLoadingTimeSlotData(false);
       }
     };
 
   // Fetch api data when component is mounted
   // Grabs the first 10 time slots from all 
   useEffect(() => {
-    if (!doctorId) return;
     fetchPageOfAllTimeSlots();
   }, []);
 
@@ -56,6 +53,7 @@ function AllTimeSlots() {
     fetchPageOfAllTimeSlots()
   }, [page, pageSize]);
 
+  // Send request to backend to delete timeslot w/ id given
   const deleteTimeSlot = async (timeSlotId: number) => {
     try {
       await api.delete(`/timeslots/${timeSlotId}`);
@@ -67,12 +65,10 @@ function AllTimeSlots() {
     }
   };
 
-  if (loadingUser) return <p>Loading user...</p>;
-  if (!user) return <p>User not found!</p>;
-  if (loadingData) return <p>Loading time slot data...</p>;
-  if (!timeSlotsData) return <p>Time slot data not found!</p>;
+  if (loadingTimeSlotData) return <p>Loading time slot data...</p>;
+  if (!timeSlotData) return <p>Time slot data not found!</p>;
 
-  const { timeSlotDtos, totalCount } = timeSlotsData;
+  const { timeSlotDtos, totalCount } = timeSlotData;
 
   return (
     <div className="mt-5">

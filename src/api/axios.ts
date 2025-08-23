@@ -1,8 +1,6 @@
 import axios from "axios";
 import { LOCAL_STORAGE_AUTH_KEY } from "../context/AuthContext";
 
-console.log(process.env.REACT_APP_WEB_API)
-
 // Creating api instance with given base url
 const api = axios.create({
   baseURL: process.env.REACT_APP_WEB_API,

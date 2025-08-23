@@ -8,20 +8,22 @@ import { BookAppointmentRequest } from "../types/requests";
 import { useAuth } from "../context/AuthContext";
 
 function BookAppointment() {
-  const { patientId } = useParams();
-  const [timeSlots, setTimeSlots] = useState<TimeSlotDto[]>([]);
+  const { id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlotDto[]>([]);
   const [selectedSlotId, setSelectedSlotId] = useState<number | null>();
   const [loadingTimeSlots, setLoadingTimeSlots] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [loadingInModal, setLoadingInModal] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAvailableTimeSlots = async () => {
       try {
         const response = await api.get("/timeslots/available");
-        setTimeSlots(response.data);
+        setAvailableTimeSlots(response.data);
       } catch (error: any) {
         console.log(error);
         const serverMessage =
@@ -35,22 +37,16 @@ function BookAppointment() {
     fetchAvailableTimeSlots();
   }, []);
 
-  const { user, loadingUser } = useAuth();
-
-  if (loadingUser) return <p>Loading user...</p>;
-  if (!user) return <p>User not found!</p>;
   if (loadingTimeSlots) return <div>Loading available time slots...</div>;
 
-  const handleBook = async () => {
-    if (!selectedSlotId) return;
-
+  const handleBook = async (selectedSlotId: number) => {
     try {
       setLoadingInModal(true);
       const dto: BookAppointmentRequest = {
         TimeSlotId: selectedSlotId,
-        PatientId: user.role == "Admin" ? patientId : undefined,
+        PatientId: user!.role == "Admin" ? id : undefined,
       };
-      const response = await api.post("/appointments/book", dto);
+      const response = await api.post("/appointments", dto);
       if (response.status == 200) {
         navigate("/");
       }
@@ -66,9 +62,9 @@ function BookAppointment() {
 
   return (
     <div className="container mt-5">
-      {showModal && (
+      {showModal && selectedSlotId && (
         <Modal
-          onConfirm={handleBook}
+          onConfirm={() => handleBook(selectedSlotId)}
           onCancel={() => setShowModal(false)}
           title={"Confirm Booking"}
           body={"Are you sure you want to book this appointment?"}
@@ -80,12 +76,12 @@ function BookAppointment() {
       <ErrorsBox errors={errors} />
 
       <h2 className="mb-4">Select an available time slot</h2>
-      {timeSlots.length === 0 ? (
+      {availableTimeSlots.length === 0 ? (
         <p>No available time slots.</p>
       ) : (
         <>
           <div className="row row-cols-1 row-cols-md-2 g-4">
-            {timeSlots.map((slot) => (
+            {availableTimeSlots.map((slot) => (
               <div className="col" key={slot.id}>
                 <div
                   className={`card ${

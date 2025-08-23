@@ -12,8 +12,7 @@ import AppointmentBox from "../components/AppointmentBox";
 import AppointmentTable from "../components/AppointmentTable";
 
 function AllAppointments() {
-  const { patientId } = useParams();
-  const { user, loadingUser } = useAuth();
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [appointmentsData, setAppointmentsData] =
@@ -31,11 +30,11 @@ function AllAppointments() {
   // using page # and page size
   const fetchPageOfAllAppts = async () => {
       try {
-        if (!patientId) return
+        if (!id) return
         const response = await api.get(
-          `/users/${patientId}/appointments?pageNumber=${page}&pageSize=${pageSize}`
+          `/patients/${id}/appointments?pageNumber=${page}&pageSize=${pageSize}`
         );
-        setAppointmentsData(response.data);
+        setAppointmentsData(response.data as GetPatientsAppointmentsResponse);
       } catch (error: any) {
         console.log(error);
         const serverMessage =
@@ -49,7 +48,6 @@ function AllAppointments() {
   // Fetch api data when component is mounted
   // Grabs the first 10 appointments from all 
   useEffect(() => {
-    if (!patientId) return;
     fetchPageOfAllAppts();
   }, []);
 
@@ -69,12 +67,10 @@ function AllAppointments() {
     }
   };
 
-  if (loadingUser) return <p>Loading user...</p>;
-  if (!user) return <p>User not found!</p>;
   if (loadingData) return <p>Loading time slot data...</p>;
   if (!appointmentsData) return <p>Time slot data not found!</p>;
 
-  const { appointmentDtos, totalCount } = appointmentsData;
+  const { appointments, totalCount } = appointmentsData;
 
   return (
     <div className="mt-5">
@@ -112,7 +108,7 @@ function AllAppointments() {
       </div>
 
       <AppointmentTable
-        appointments={appointmentDtos}
+        appointments={appointments}
         deleteAction={(appt: AppointmentDto) => {
             setSelectedAppt(appt)
             setShowModal(true)

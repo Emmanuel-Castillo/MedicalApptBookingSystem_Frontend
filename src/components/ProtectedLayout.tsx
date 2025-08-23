@@ -2,18 +2,17 @@ import { useAuth } from "../context/AuthContext";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 function ProtectedLayout() {
-  const { user, logOut } = useAuth();
+  const { user, loadingUser, logOut } = useAuth();
   const navigate = useNavigate();
+
+  if (loadingUser) return <p>Loading user...</p>;
+  if (!user) return <Navigate to={"/login"} replace />;
 
   const handleLogOut = () => {
     logOut();
     navigate("/login");
   };
-
-  if (!user) {
-    return <Navigate to={"/login"} replace />;
-  }
-
+  
   return (
     <div className="min-vh-100">
       {/* Navbar */}

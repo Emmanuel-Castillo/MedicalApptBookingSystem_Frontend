@@ -8,59 +8,52 @@ import { AppointmentDto } from "../types/dtos";
 import Modal from "../components/Modal";
 import AppointmentBox from "../components/AppointmentBox";
 import AppointmentTable from "../components/AppointmentTable";
+import ErrorsBox from "../components/ErrorsBox";
 
 // Component accessible for Patients and Admins ONLY
 function PatientDetails() {
-  // FOR ADMIN: Retrieve patient id from url param
   const { id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  // FOR PATIENT: Retrieve user for their id ONLY IF they are a Patient
-  const { user, loadingUser } = useAuth();
-
-  const [data, setData] = useState<GetPatientInfoResponse | null>(null);
-  const [loadingData, setLoadingData] = useState(true);
+  const [patientInfo, setPatientInfo] = useState<GetPatientInfoResponse | null>(null);
+  const [loadingPatientInfo, setLoadingPatientInfo] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedAppt, setSelectedAppt] = useState<AppointmentDto | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const navigate = useNavigate();
 
-  // Invoke useEffect ONCE user has been loaded
+  // Invoke useEffect components mounts
   useEffect(() => {
     const getPatientDetails = async () => {
       try {
-        if (!user) return null;
-
         let patientId: string;
 
         // If curr user is Admin, use id URL param
-        if (user.role == "Admin" && id != null) patientId = id;
+        if (user!.role == "Admin" && id != null) patientId = id;
         // Else, curr user must be a Patient, so use their user.id instead
-        else patientId = user.id;
+        else patientId = user!.id;
 
-        const response = await api.get(`/users/patients/${patientId}`);
-        setData(response.data);
+        const response = await api.get(`/patients/${patientId}`);
+        setPatientInfo(response.data);
       } catch (error: any) {
         const serverMessage =
           error.response.data || error.message || "Appointment booking failed!";
         setErrors([serverMessage]);
       } finally {
-        setLoadingData(false);
+        setLoadingPatientInfo(false);
       }
     };
 
-    // Invoke getPatientDetails once user has been retrieved!
-    if (user) getPatientDetails();
-  }, [user]);
+    getPatientDetails();
+  }, []);
 
-  if (loadingUser) return <p>Loading user...</p>;
-  if (!user) return <p>User not found!</p>;
-  if (loadingData) return <div>Loading patient details...</div>;
-  if (!data) return <div>Patient details not found.</div>;
+  if (loadingPatientInfo) return <div>Loading patient details...</div>;
+  if (!patientInfo) return <div>Patient details not found.</div>;
 
-  const { patient, appointments } = data;
+  const { patient: Patient, appointmentsThisWeek: AppointmentsThisWeek } = patientInfo;
 
-  const onClickDeleteAppt = (appt: AppointmentDto) => {
+  const onClickDeleteBtn = (appt: AppointmentDto) => {
     setSelectedAppt(appt);
     setShowModal(true);
   };
@@ -88,19 +81,21 @@ function PatientDetails() {
         />
       )}
 
+      <ErrorsBox errors={errors}/>
+
       <div className="bg-light p-3 rounded border mb-5">
         <div className="d-flex flex-wrap align-items-center mb-3">
           <h2 className="me-5">User Details</h2>
-          {user.role == "Admin" && (
+          {user!.role == "Admin" && (
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/editUser/${patient.id}`)}
+              onClick={() => navigate(`/users/${Patient.id}/edit-user`)}
             >
               Edit User
             </button>
           )}
         </div>
-        <UserDetails user={patient} />
+        <UserDetails user={Patient} />
       </div>
 
       <div className="col">
@@ -109,13 +104,13 @@ function PatientDetails() {
           <div className="d-flex flex-wrap gap-2">
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/book/${patient.id}`)}
+              onClick={() => navigate(`/patients/${Patient.id}/book-appointment`)}
             >
               Create New
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/users/${patient.id}/appointments`)}
+              onClick={() => navigate(`/patients/${Patient.id}/appointments`)}
             >
               View All
             </button>
@@ -123,8 +118,8 @@ function PatientDetails() {
         </div>
         <h6>Booked - This Week</h6>
         <AppointmentTable
-          appointments={appointments}
-          deleteAction={(appt: AppointmentDto) => onClickDeleteAppt(appt)}
+          appointments={AppointmentsThisWeek}
+          deleteAction={(appt: AppointmentDto) => onClickDeleteBtn(appt)}
         />
       </div>
     </div>
