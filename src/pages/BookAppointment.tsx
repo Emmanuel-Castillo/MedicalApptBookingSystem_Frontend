@@ -6,38 +6,57 @@ import Modal from "../components/Modal";
 import ErrorsBox from "../components/ErrorsBox";
 import { BookAppointmentRequest } from "../types/requests";
 import { useAuth } from "../context/AuthContext";
+import TimeSlotTable from "../components/TimeSlotTable";
+import { GetAvailableTimeSlotsResponse } from "../types/responses";
+import TimeSlotCard from "../components/TimeSlotCard";
 
 function BookAppointment() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlotDto[]>([]);
-  const [selectedSlotId, setSelectedSlotId] = useState<number | null>();
+  const [availableTSData, setAvailableTSData] =
+    useState<GetAvailableTimeSlotsResponse | null>();
+  const [selectedSlot, setSelectedSlot] = useState<TimeSlotDto | null>();
   const [loadingTimeSlots, setLoadingTimeSlots] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [loadingInModal, setLoadingInModal] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchAvailableTimeSlots = async () => {
-      try {
-        const response = await api.get("/timeslots/available");
-        setAvailableTimeSlots(response.data);
-      } catch (error: any) {
-        console.log(error);
-        const serverMessage =
-          error.response.data || error.message || "Registration failed!";
-        setErrors([serverMessage]);
-      } finally {
-        setLoadingTimeSlots(false);
-      }
-    };
+  // API time slot pagination states
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
 
+  // API call
+  const fetchAvailableTimeSlots = async () => {
+    try {
+      const response = await api.get(`/timeslots/available?pageNumber=${page}&pageSize=${pageSize}`);
+      setAvailableTSData(response.data as GetAvailableTimeSlotsResponse);
+    } catch (error: any) {
+      console.log(error);
+      const serverMessage =
+        error.response.data || error.message || "Registration failed!";
+      setErrors([serverMessage]);
+    } finally {
+      setLoadingTimeSlots(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAvailableTimeSlots();
   }, []);
 
+  useEffect(() => {
+    fetchAvailableTimeSlots()
+  }, [page, pageSize])
+
   if (loadingTimeSlots) return <div>Loading available time slots...</div>;
+  if (!availableTSData) return <div>Available time slot data not found!</div>;
+  const { availableTimeSlotDtos, totalCount } = availableTSData;
+
+  const selectTSRow = (ts: TimeSlotDto) => {
+    setSelectedSlot(ts);
+  };
 
   const handleBook = async (selectedSlotId: number) => {
     try {
@@ -62,12 +81,12 @@ function BookAppointment() {
 
   return (
     <div className="container mt-5">
-      {showModal && selectedSlotId && (
+      {showModal && selectedSlot && (
         <Modal
-          onConfirm={() => handleBook(selectedSlotId)}
+          onConfirm={() => handleBook(selectedSlot.id)}
           onCancel={() => setShowModal(false)}
           title={"Confirm Booking"}
-          body={"Are you sure you want to book this appointment?"}
+          body={<TimeSlotCard timeSlot={selectedSlot}/>}
           confirmText={"Yes, Book It"}
           loading={loadingInModal}
         />
@@ -75,52 +94,40 @@ function BookAppointment() {
 
       <ErrorsBox errors={errors} />
 
-      <h2 className="mb-4">Select an available time slot</h2>
-      {availableTimeSlots.length === 0 ? (
-        <p>No available time slots.</p>
-      ) : (
-        <>
-          <div className="row row-cols-1 row-cols-md-2 g-4">
-            {availableTimeSlots.map((slot) => (
-              <div className="col" key={slot.id}>
-                <div
-                  className={`card ${
-                    selectedSlotId === slot.id ? "border-primary" : ""
-                  }`}
-                  style={{ cursor: "pointer" }}
-                >
-                  <div
-                    className="card-body"
-                    onClick={() =>
-                      setSelectedSlotId((prev) =>
-                        prev === slot.id ? null : slot.id
-                      )
-                    }
-                  >
-                    <h5 className="card-title">{slot.doctor.fullName}</h5>
-                    <p className="card-text">
-                      <strong>Start:</strong>{" "}
-                      {new Date(slot.startTime).toLocaleString()}
-                      <br />
-                      <strong>End:</strong>{" "}
-                      {new Date(slot.endTime).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 text-end">
-            <button
-              className="btn btn-primary"
-              disabled={!selectedSlotId}
-              onClick={() => setShowModal(true)}
-            >
-              Book Appointment
-            </button>
-          </div>
-        </>
-      )}
+      <div className="d-flex flex-wrap mb-3">
+        <h2 className="me-5">Select an available time slot</h2>
+        <div className="d-flex gap-2">
+          <button
+            className="btn btn-outline-primary"
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+          >
+            Previous
+          </button>
+          <button
+            className="btn btn-outline-primary"
+            disabled={page * pageSize >= totalCount}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+      <TimeSlotTable
+        timeSlots={availableTimeSlotDtos}
+        patientUse={true}
+        selectedTS={selectedSlot}
+        selectAction={selectTSRow}
+      />
+      <div className="mt-4 text-end">
+        <button
+          className="btn btn-primary"
+          disabled={!selectedSlot}
+          onClick={() => setShowModal(true)}
+        >
+          Book Appointment
+        </button>
+      </div>
     </div>
   );
 }

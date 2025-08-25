@@ -43,5 +43,5 @@ export type SetDoctorAvailRequest = {
   startTime: string;
   endTime: string;
   startDate: string;
-  endDate?: string;
+  endDate: string;
 };

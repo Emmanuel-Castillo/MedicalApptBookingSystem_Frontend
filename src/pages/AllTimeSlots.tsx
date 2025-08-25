@@ -27,30 +27,31 @@ function AllTimeSlots() {
   // Callback function to retrieve list of time slots
   // using page # and page size
   const fetchPageOfAllTimeSlots = async () => {
-      try {
-        const response = await api.get(
-          `doctors/${id}/timeslots?pageNumber=${page}&pageSize=${pageSize}`
-        );
-        setTimeSlotData(response.data);
-      } catch (error: any) {
-        console.log(error);
-        const serverMessage =
-          error.response.data || error.message || "Fetching all time slots failed!";
-        setErrors([serverMessage]);
-      } finally {
-        setLoadingTimeSlotData(false);
-      }
-    };
+    try {
+      const response = await api.get(
+        `doctors/${id}/timeslots?pageNumber=${page}&pageSize=${pageSize}`
+      );
+      setTimeSlotData(response.data);
+    } catch (error: any) {
+      const serverMessage =
+        error.response.data ||
+        error.message ||
+        "Fetching all time slots failed!";
+      setErrors([serverMessage]);
+    } finally {
+      setLoadingTimeSlotData(false);
+    }
+  };
 
   // Fetch api data when component is mounted
-  // Grabs the first 10 time slots from all 
+  // Grabs the first 10 time slots from all
   useEffect(() => {
     fetchPageOfAllTimeSlots();
   }, []);
 
   // When request prev or next page of time slots, fetch time slots using same function
   useEffect(() => {
-    fetchPageOfAllTimeSlots()
+    fetchPageOfAllTimeSlots();
   }, [page, pageSize]);
 
   // Send request to backend to delete timeslot w/ id given
@@ -66,7 +67,13 @@ function AllTimeSlots() {
   };
 
   if (loadingTimeSlotData) return <p>Loading time slot data...</p>;
-  if (!timeSlotData) return <p>Time slot data not found!</p>;
+  if (!timeSlotData)
+    return (
+      <>
+        <ErrorsBox errors={errors} />
+        <p>Time slot data not found!</p>
+      </>
+    );
 
   const { timeSlotDtos, totalCount } = timeSlotData;
 

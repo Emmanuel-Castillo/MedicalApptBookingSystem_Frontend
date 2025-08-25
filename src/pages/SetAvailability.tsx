@@ -56,9 +56,9 @@ function SetAvailability() {
   // If all form inputs are set, set formReady
   // startTime, endTime, startTimeIsPm, and endTimeIsPm will always be truthy
   useEffect(() => {
-    if (daysOfWeek && startDate) setFormReady(true);
+    if (daysOfWeek && startDate && endDate) setFormReady(true);
     else setFormReady(false);
-  }, [daysOfWeek, startDate]);
+  }, [daysOfWeek, startDate, endDate]);
 
   // Add/remove day of week from state list
   const toggleDayinDaysOfWeek = (day: DayOfWeek) => {
@@ -90,7 +90,7 @@ function SetAvailability() {
         if (endTimeHr < startTimeHr)
           throw Error("End time is set before start time!");
       }
-      if (endDate && endDate < startDate) {
+      if (endDate < startDate) {
         throw Error("End date is set before start date!");
       }
 
@@ -100,14 +100,14 @@ function SetAvailability() {
         startTime: formatTimeForDto(startTimeHr, startTimeIsPm),
         endTime: formatTimeForDto(endTimeHr, endTimeIsPm),
         startDate: startDate,
-        endDate: endDate ? endDate : undefined,
+        endDate: endDate,
       };
 
-      console.log(docAvailRequest);
-      // await api.post("/availability", docAvailRequest);
-      // navigate(-1);
+      await api.post("/availability", docAvailRequest);
+      navigate(-1);
     } catch (error: any) {
-      const message = error.message || "Invalid inputs!";
+      console.log(error.response.data)
+      const message = error.response.data || error.message || "Invalid inputs!";
       setErrors([message]);
     } finally {
       setLoading(false);
@@ -154,7 +154,7 @@ function SetAvailability() {
                     <td>{formatGivenTime(a.startTime)}</td>
                     <td>{formatGivenTime(a.endTime)}</td>
                     <td>{new Date(a.startDate).toLocaleDateString()}</td>
-                    <td>{a.endDate ? a.endDate : "--"}</td>
+                    <td>{new Date(a.endDate).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -295,7 +295,7 @@ function SetAvailability() {
               />
             </div>
             <div className="d-flex flex-column">
-              <label className="form-label">End Date (optional)</label>
+              <label className="form-label">End Date</label>
               <input
                 type="date"
                 className="form-control"

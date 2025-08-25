@@ -122,19 +122,8 @@ function DoctorDetails() {
             </button>
           </div>
         </div>
-        <h6>Booked - Next 7 Days</h6>
-        <TimeSlotTable timeSlots={upcomingTimeSlots.filter((ts) => ts.isBooked)} />
-      </div>
-
-      <div className="col">
-        <h6>All - Next 7 Days</h6>
-        <TimeSlotTable
-          timeSlots={upcomingTimeSlots}
-          deleteAction={(ts: TimeSlotDto) => {
-            setShowModal(true);
-            setSelectedTS(ts);
-          }}
-        />
+        <h6>Booked - Next Two Weeks</h6>
+        <TimeSlotTable timeSlots={upcomingTimeSlots} />
       </div>
     </div>
   );

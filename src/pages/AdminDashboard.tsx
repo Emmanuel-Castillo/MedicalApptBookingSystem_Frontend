@@ -21,7 +21,7 @@ function AdminDashboard() {
       } catch (error: any) {
         console.log(error);
         const serverMessage =
-          error.response.data || error.message || "Registration failed!";
+          error.message || "Fetching users failed!";
         setErrors([serverMessage]);
       } finally {
         setLoadingUsers(false);
@@ -48,8 +48,7 @@ function AdminDashboard() {
 
   return (
     <div className="container mt-4">
-
-      <ErrorsBox errors={errors}/>
+      <ErrorsBox errors={errors} />
 
       <div className="d-flex mb-4">
         <h2>Welcome, {user!.fullName}!</h2>

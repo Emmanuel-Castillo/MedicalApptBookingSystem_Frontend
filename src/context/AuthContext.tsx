@@ -29,11 +29,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // If user is already saved from 
     if (!loadingUser && user) return;
+    console.log("Calling context")
 
     const storedAuth = localStorage.getItem(LOCAL_STORAGE_AUTH_KEY);
     if (storedAuth) {
       setUser(JSON.parse(storedAuth) as AuthUser);
     } 
+
+    setLoadingUser(false)
   }, []);
 
   useEffect(() => {
