@@ -45,3 +45,7 @@ export type SetDoctorAvailRequest = {
   startDate: string;
   endDate: string;
 };
+
+export type UpdateApptNotesRequest = {
+  updatedNotes?: string;
+}

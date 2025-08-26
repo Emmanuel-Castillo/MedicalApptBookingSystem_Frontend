@@ -10,7 +10,7 @@ import AppointmentBox from "../components/AppointmentBox";
 
 function TimeSlotDetails() {
   const { id } = useParams();
-  const { user, loadingUser } = useAuth();
+  const { user } = useAuth();
 
   const [timeSlotData, setTimeSlotData] = useState<GetTimeSlotResponse | null>(
     null
@@ -34,14 +34,14 @@ function TimeSlotDetails() {
     };
 
     fetchApptData();
-  }, [user]);
+  }, []);
 
-  if (loadingUser) return <p>Loading user...</p>;
-  if (!user) return <p>User not found!</p>;
   if (loadingData) return <p>Loading time slot data...</p>;
   if (!timeSlotData) return <p>Time slot data not found!</p>;
 
   const { timeSlot, appointment } = timeSlotData;
+
+  const canEditNotes = user!.role === "Admin" ? true : user!.role === "Doctor" ? timeSlot.doctor.id === Number(user!.id) : false
 
   return (
     <div className="d-flex flex-column mt-5 gap-5">
@@ -49,7 +49,14 @@ function TimeSlotDetails() {
 
       <TimeSlotCard timeSlot={timeSlot} />
 
-      {appointment && <AppointmentBox appt={appointment} showNotes title="Booked Appointment"/>}
+      {appointment && (
+        <AppointmentBox
+          appt={appointment}
+          editNotes={canEditNotes}
+          showNotes
+          title="Booked Appointment"
+        />
+      )}
     </div>
   );
 }
