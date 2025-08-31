@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { AppointmentDto } from "../types/dtos";
-import api from "../api/axios";
-import ErrorsBox from "../components/ErrorsBox";
-import AppointmentBox from "../components/AppointmentBox";
+import { useAuth } from "../../../context/AuthContext";
+import { AppointmentDto } from "../../../types/dtos";
+import api from "../../../api/axios";
+import ErrorsBox from "../../../components/ErrorsBox";
+import AppointmentBox from "../../../components/AppointmentBox";
 
 function AppointmentDetails() {
   const { id } = useParams();

@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../api/axios";
-import {
-  GetDoctorInfoResponse,
-} from "../types/responses";
-import UserDetails from "../components/UserDetails";
-import { useAuth } from "../context/AuthContext";
-import TimeSlotTable from "../components/TimeSlotTable";
-import Modal from "../components/Modal";
-import { TimeSlotDto } from "../types/dtos";
-import TimeSlotCard from "../components/TimeSlotCard";
-import ErrorsBox from "../components/ErrorsBox";
+import { useAuth } from "../../../context/AuthContext";
+import { GetDoctorInfoResponse } from "../../../types/responses";
+import { TimeSlotDto } from "../../../types/dtos";
+import api from "../../../api/axios";
+import Modal from "../../../components/Modal";
+import TimeSlotCard from "../../../components/TimeSlotCard";
+import ErrorsBox from "../../../components/ErrorsBox";
+import UserDetails from "../../../components/UserDetails";
+import TimeSlotTable from "../../../components/TimeSlotTable";
 
 // Component accessible for Doctors and Admins ONLY
 function DoctorDetails() {

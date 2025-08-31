@@ -1,26 +1,26 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import ProtectedLayout from "./components/ProtectedLayout";
-import PatientDetails from "./pages/PatientDetails";
-import BookAppointment from "./pages/BookAppointment";
-import AdminDashboard from "./pages/AdminDashboard";
-import DoctorDetails from "./pages/DoctorDetails";
-import CreateTimeSlots from "./pages/CreateTimeSlots";
-import Home from "./pages/Home";
-import AppointmentDetails from "./pages/AppointmentDetails";
-import EditUser from "./pages/EditUser";
-import SetAvailability from "./pages/SetAvailability";
-import TimeSlotDetails from "./pages/TimeSlotDetails";
-import AllTimeSlots from "./pages/AllTimeSlots";
-import AllAppointments from "./pages/AllApppointments";
+import Home from "./pages/protected/Home";
+import EditUser from "./pages/protected/EditUser";
+import DoctorDetails from "./pages/protected/doctors/DoctorDetails";
+import AllTimeSlots from "./pages/protected/doctors/AllTimeSlots";
+import TimeSlotDetails from "./pages/protected/doctors/TimeSlotDetails";
+import CreateTimeSlots from "./pages/protected/doctors/CreateTimeSlots";
+import PatientDetails from "./pages/protected/patients/PatientDetails";
+import AppointmentDetails from "./pages/protected/patients/AppointmentDetails";
+import AllAppointments from "./pages/protected/patients/AllApppointments";
+import BookAppointment from "./pages/protected/patients/BookAppointment";
+import SetAvailability from "./pages/protected/doctors/SetAvailability";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import PasswordChangeRequested from "./pages/auth/PasswordChangeRequested";
+import ResetPassword from "./pages/auth/ResetPassword";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
         <Routes>
           {/* NAVBAR ACCROSS ALL AUTHORIZED PAGES */}
           <Route element={<ProtectedLayout />}>
@@ -131,12 +131,13 @@ function App() {
               }
             />
           </Route>
-
+            
+          <Route path="/forgot-password" element={<ForgotPassword/>}/>
+          <Route path="/pw-reset-requested" element={<PasswordChangeRequested/>}/>
+          <Route path="/reset-password" element={<ResetPassword/>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
   );
 }
 

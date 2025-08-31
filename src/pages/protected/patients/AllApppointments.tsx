@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import api from "../api/axios";
-import { AppointmentDto, TimeSlotDto } from "../types/dtos";
-import TimeSlotTable from "../components/TimeSlotTable";
-import ErrorsBox from "../components/ErrorsBox";
-import Modal from "../components/Modal";
-import TimeSlotCard from "../components/TimeSlotCard";
-import { GetPatientsAppointmentsResponse } from "../types/responses";
-import AppointmentBox from "../components/AppointmentBox";
-import AppointmentTable from "../components/AppointmentTable";
+import { GetPatientsAppointmentsResponse } from "../../../types/responses";
+import { AppointmentDto } from "../../../types/dtos";
+import ErrorsBox from "../../../components/ErrorsBox";
+import Modal from "../../../components/Modal";
+import AppointmentBox from "../../../components/AppointmentBox";
+import api from "../../../api/axios";
+import AppointmentTable from "../../../components/AppointmentTable";
 
 function AllAppointments() {
   const { id } = useParams();

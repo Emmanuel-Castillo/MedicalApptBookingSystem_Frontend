@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DayOfWeek, DoctorAvailabilityDto } from "../types/dtos";
-import api from "../api/axios";
-import ErrorsBox from "../components/ErrorsBox";
-import { SetDoctorAvailRequest } from "../types/requests";
+import { DayOfWeek, DoctorAvailabilityDto } from "../../../types/dtos";
+import api from "../../../api/axios";
+import { SetDoctorAvailRequest } from "../../../types/requests";
+import ErrorsBox from "../../../components/ErrorsBox";
 
 const AVAILABLE_HOURS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 

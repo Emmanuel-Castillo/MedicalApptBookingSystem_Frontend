@@ -21,23 +21,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const LOCAL_STORAGE_AUTH_KEY = "auth";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(
+    localStorage.getItem(LOCAL_STORAGE_AUTH_KEY) ?
+    JSON.parse(localStorage.getItem(LOCAL_STORAGE_AUTH_KEY)!) as AuthUser :
+    null
+  );
   const [loadingUser, setLoadingUser] = useState(true);
 
   // Inject User model information when context is invoked
-  useEffect(() => {
+  // useEffect(() => {
 
-    // If user is already saved from 
-    if (!loadingUser && user) return;
-    console.log("Calling context")
+  //   // If user is already saved from 
+  //   if (!loadingUser && user) return;
+  //   console.log("Calling context")
 
-    const storedAuth = localStorage.getItem(LOCAL_STORAGE_AUTH_KEY);
-    if (storedAuth) {
-      setUser(JSON.parse(storedAuth) as AuthUser);
-    } 
+  //   const storedAuth = localStorage.getItem(LOCAL_STORAGE_AUTH_KEY);
+  //   if (storedAuth) {
+  //     setUser(JSON.parse(storedAuth) as AuthUser);
+  //   } 
 
-    setLoadingUser(false)
-  }, []);
+  //   setLoadingUser(false)
+  // }, []);
 
   useEffect(() => {
     if (user) {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../api/axios";
-import { UserDto } from "../types/dtos";
-import ErrorsBox from "../components/ErrorsBox";
-import { ChangeUserRequest } from "../types/requests";
+import api from "../../api/axios";
+import { UserDto } from "../../types/dtos";
+import ErrorsBox from "../../components/ErrorsBox";
+import { ChangeUserRequest } from "../../types/requests";
 
 function EditUser() {
   const { id } = useParams();

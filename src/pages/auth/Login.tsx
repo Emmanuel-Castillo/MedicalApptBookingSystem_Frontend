@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { validateForm } from "../utils/ValidateAuthForm";
-import ErrorsBox from "../components/ErrorsBox";
-import api from "../api/axios";
-import { AuthUser, useAuth } from "../context/AuthContext";
 import { jwtDecode } from "jwt-decode";
-import { UserLoginDto, UserRole } from "../types/dtos";
+import { AuthUser, useAuth } from "../../context/AuthContext";
+import { validateForm } from "../../utils/ValidateAuthForm";
+import { UserLoginDto, UserRole } from "../../types/dtos";
+import api from "../../api/axios";
+import ErrorsBox from "../../components/ErrorsBox";
 
 // Used to parse JWT token claims
 const ROLE_CLAIM_URL =
@@ -69,7 +69,7 @@ function Login() {
       setErrors([serverMessage]);
     } finally {
       setLoading(false);
-      return
+      return;
     }
   };
 
@@ -111,6 +111,16 @@ function Login() {
         </button>
       </form>
 
+      <p className="mt-4 mb-0">
+        Forgot password?{" "}
+        <span
+          className="link-primary"
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/forgot-password")}
+        >
+          Click here
+        </span>
+      </p>
       <p>
         Don't have an account?{" "}
         <span

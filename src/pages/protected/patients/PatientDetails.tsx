@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../api/axios";
-import { GetPatientInfoResponse } from "../types/responses";
-import UserDetails from "../components/UserDetails";
-import { useAuth } from "../context/AuthContext";
-import { AppointmentDto } from "../types/dtos";
-import Modal from "../components/Modal";
-import AppointmentBox from "../components/AppointmentBox";
-import AppointmentTable from "../components/AppointmentTable";
-import ErrorsBox from "../components/ErrorsBox";
+import { useAuth } from "../../../context/AuthContext";
+import { GetPatientInfoResponse } from "../../../types/responses";
+import { AppointmentDto } from "../../../types/dtos";
+import api from "../../../api/axios";
+import ErrorsBox from "../../../components/ErrorsBox";
+import UserDetails from "../../../components/UserDetails";
+import AppointmentTable from "../../../components/AppointmentTable";
+import Modal from "../../../components/Modal";
+import AppointmentBox from "../../../components/AppointmentBox";
 
 // Component accessible for Patients and Admins ONLY
 function PatientDetails() {

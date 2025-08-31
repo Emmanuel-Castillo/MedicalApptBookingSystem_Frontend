@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ErrorsBox from "../components/ErrorsBox";
-import { CreateTimeSlotRequest } from "../types/requests";
-import { useAuth } from "../context/AuthContext";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import api from "../api/axios";
+import { useAuth } from "../../../context/AuthContext";
+import { CreateTimeSlotRequest } from "../../../types/requests";
+import api from "../../../api/axios";
+import ErrorsBox from "../../../components/ErrorsBox";
 
 function CreateTimeSlots() {
   const { id } = useParams();

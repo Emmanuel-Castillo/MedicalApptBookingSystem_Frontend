@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import api from "../api/axios";
-import { TimeSlotDto } from "../types/dtos";
-import TimeSlotTable from "../components/TimeSlotTable";
-import ErrorsBox from "../components/ErrorsBox";
-import Modal from "../components/Modal";
-import TimeSlotCard from "../components/TimeSlotCard";
-import { GetDoctorsTimeSlotsResponse } from "../types/responses";
+import { GetDoctorsTimeSlotsResponse } from "../../../types/responses";
+import { TimeSlotDto } from "../../../types/dtos";
+import api from "../../../api/axios";
+import ErrorsBox from "../../../components/ErrorsBox";
+import Modal from "../../../components/Modal";
+import TimeSlotCard from "../../../components/TimeSlotCard";
+import TimeSlotTable from "../../../components/TimeSlotTable";
 
 function AllTimeSlots() {
   const { id } = useParams();

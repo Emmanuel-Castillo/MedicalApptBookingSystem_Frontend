@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { TimeSlotDto } from "../types/dtos";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../api/axios";
-import Modal from "../components/Modal";
-import ErrorsBox from "../components/ErrorsBox";
-import { BookAppointmentRequest } from "../types/requests";
-import { useAuth } from "../context/AuthContext";
-import TimeSlotTable from "../components/TimeSlotTable";
-import { GetAvailableTimeSlotsResponse } from "../types/responses";
-import TimeSlotCard from "../components/TimeSlotCard";
+import { useAuth } from "../../../context/AuthContext";
+import { GetAvailableTimeSlotsResponse } from "../../../types/responses";
+import { TimeSlotDto } from "../../../types/dtos";
+import api from "../../../api/axios";
+import { BookAppointmentRequest } from "../../../types/requests";
+import Modal from "../../../components/Modal";
+import TimeSlotCard from "../../../components/TimeSlotCard";
+import ErrorsBox from "../../../components/ErrorsBox";
+import TimeSlotTable from "../../../components/TimeSlotTable";
 
 function BookAppointment() {
   const { id } = useParams();

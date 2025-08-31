@@ -1,9 +1,9 @@
 import React, { use, useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
-import { UserDto, UserRole } from "../types/dtos";
-import ErrorsBox from "../components/ErrorsBox";
+import api from "../../api/axios";
+import { UserDto, UserRole } from "../../types/dtos";
+import ErrorsBox from "../../components/ErrorsBox";
 
 function AdminDashboard() {
   const { user } = useAuth();

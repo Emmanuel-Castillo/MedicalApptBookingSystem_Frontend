@@ -49,3 +49,12 @@ export type SetDoctorAvailRequest = {
 export type UpdateApptNotesRequest = {
   updatedNotes?: string;
 }
+
+export type ForgotPasswordRequest = {
+  email: string
+}
+
+export type ResetPasswordRequest = {
+  token: string;
+  newPassword: string;
+}

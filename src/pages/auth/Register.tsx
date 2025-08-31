@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import api from "../api/axios";
 import { Navigate, useNavigate } from "react-router-dom";
-import { validateForm } from "../utils/ValidateAuthForm";
-import ErrorsBox from "../components/ErrorsBox";
-import { useAuth } from "../context/AuthContext";
-import { UserRegisterDto, UserRole } from "../types/dtos";
+import { UserRegisterDto, UserRole } from "../../types/dtos";
+import { useAuth } from "../../context/AuthContext";
+import { validateForm } from "../../utils/ValidateAuthForm";
+import api from "../../api/axios";
+import ErrorsBox from "../../components/ErrorsBox";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
