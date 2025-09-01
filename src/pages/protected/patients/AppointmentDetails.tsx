@@ -8,7 +8,7 @@ import AppointmentBox from "../../../components/AppointmentBox";
 
 function AppointmentDetails() {
   const { id } = useParams();
-  const { user, loadingUser } = useAuth();
+  const { user } = useAuth();
 
   const [appointmentData, setAppointmentData] = useState<AppointmentDto | null>(
     null
@@ -34,7 +34,6 @@ function AppointmentDetails() {
     fetchApptData();
   }, [user]);
 
-  if (loadingUser) return <p>Loading user...</p>
   if (!user) return <p>User not found!</p>;
   if (loadingData) return <p>Loading appointment data...</p>;
   if (!appointmentData) return <p>Appointment data not found!</p>;

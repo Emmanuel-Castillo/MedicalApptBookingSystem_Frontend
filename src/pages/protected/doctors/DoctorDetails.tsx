@@ -68,7 +68,7 @@ function DoctorDetails() {
   const { doctor, upcomingTimeSlots } = doctorInfo;
 
   return (
-    <div className="d-flex flex-column gap-3">
+    <div className="container mt-4">
       {showModal && selectedTS && (
         <Modal
           title={"Delete Time Slot"}

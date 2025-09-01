@@ -11,7 +11,6 @@ export type AuthUser = {
 };
 type AuthContextType = {
   user: AuthUser | null;
-  loadingUser: boolean;
   logIn: (userData: AuthUser) => void;
   logOut: () => void;
 };
@@ -26,7 +25,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     JSON.parse(localStorage.getItem(LOCAL_STORAGE_AUTH_KEY)!) as AuthUser :
     null
   );
-  const [loadingUser, setLoadingUser] = useState(true);
 
   // Inject User model information when context is invoked
   // useEffect(() => {
@@ -44,10 +42,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // }, []);
 
   useEffect(() => {
-    if (user) {
-      setLoadingUser(false);
-    }
-  }, [user]);
+    console.log("calling for auth context. user: ", user)
+  },[])
 
   const logIn = (userData: AuthUser) => {
     localStorage.setItem(LOCAL_STORAGE_AUTH_KEY, JSON.stringify(userData));
@@ -57,11 +53,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logOut = () => {
     localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
     setUser(null);
-    setLoadingUser(true)
   };
 
   return (
-    <AuthContext.Provider value={{ user, loadingUser, logIn, logOut }}>
+    <AuthContext.Provider value={{ user, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );
