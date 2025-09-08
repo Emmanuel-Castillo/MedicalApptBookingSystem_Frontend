@@ -1,12 +1,12 @@
-import { AppointmentDto, TimeSlotDto, UserDto } from "./dtos";
+import { AppointmentDto, DoctorProfileDto, PatientProfileDto, TimeSlotDto, UserDto } from "./dtos";
 
 export type GetDoctorInfoResponse = {
-    doctor: UserDto;
-    upcomingTimeSlots: TimeSlotDto[];
+    doctorProfile: DoctorProfileDto;
+    bookedTimeSlotsNextTwoWeeks: TimeSlotDto[];
 }
 
 export type GetPatientInfoResponse = {
-    patient: UserDto;
+    patientProfile: PatientProfileDto;
     appointmentsThisWeek: AppointmentDto[];
 }
 
@@ -27,5 +27,10 @@ export type GetPatientsAppointmentsResponse = {
 
 export type GetAvailableTimeSlotsResponse = {
     availableTimeSlotDtos: TimeSlotDto[];
+    totalCount: number;
+}
+
+export type GetAllAppointmentsResponse = {
+    listAppointmentDto: AppointmentDto[];
     totalCount: number;
 }

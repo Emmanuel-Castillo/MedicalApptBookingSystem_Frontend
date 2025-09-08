@@ -15,9 +15,9 @@ const doctorPanelLinks: PanelLink[] = [
 ];
 const adminPanelLinks: PanelLink[] = [
   { name: "Dashboard", link: "/" },
-  { name: "Appointments", link: "/" },
-  { name: "Add Doctor", link: "/" },
-  { name: "Doctors List", link: "/" },
+  { name: "Appointments", link: "/all-appointments" },
+  { name: "Add Doctor", link: "/add-doctor" },
+  { name: "Doctors List", link: "/all-doctors" },
 ];
 
 function SidePanel({ role }: SidePanelProps) {
@@ -28,8 +28,8 @@ function SidePanel({ role }: SidePanelProps) {
       className="d-flex h-100 p-3 text-white bg-dark collapse"
     >
       <ul className="nav nav-pills flex-column">
-        {panelLinks.map((p) => (
-          <li>
+        {panelLinks.map((p, idx) => (
+          <li key={idx}>
             <a href={p.link} className="nav-link text-white">
               {p.name}
             </a>

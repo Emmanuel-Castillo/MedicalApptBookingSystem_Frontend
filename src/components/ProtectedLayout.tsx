@@ -37,10 +37,10 @@ function ProtectedLayout() {
             <div className="col-12 col-md-3 col-xl-2 p-0 d-md-block collapse" id="sidePanel">
               <SidePanel role={user.role}/>
             </div>
-            <div className="col-12 col-md-8 col-xl-8 p-0 flex-grow-1">
+            <div className="col-12 col-md-9 col-xl-8 p-0 flex-grow-1">
               <Outlet/>
             </div>
-          </div>
+          </div>  
       )}
     </div>
   );

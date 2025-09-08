@@ -4,6 +4,7 @@ import Modal from "./Modal";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { UpdateApptNotesRequest } from "../types/requests";
+import { formatDate, formatTime } from "../utils/FormatDateAndTime";
 
 type AppointmentBoxProps = {
   appt: AppointmentDto;
@@ -69,29 +70,34 @@ function AppointmentBox({
           title="Confirm Notes Update"
         />
       )}
-      <div className="card-body">
+      <div className="card-body d-flex flex-column gap-3">
         <h3 className="card-title mb-4">{title || "Appointment Details"}</h3>
 
-        <div className="mb-3">
+        <div>
           <h5 className="mb-1 text-secondary">Patient</h5>
           <p className="mb-0 fw-medium">{patient.fullName}</p>
         </div>
 
-        <div className="mb-3">
+        <div>
+          <h5 className="mb-1 text-secondary">Date</h5>
+          <p className="mb-0">{formatDate(timeSlot.date)}</p>
+        </div>
+
+        <div>
           <h5 className="mb-1 text-secondary">Appointment Time</h5>
           <p className="mb-0">
-            {new Date(startTime).toLocaleString()} –{" "}
-            {new Date(endTime).toLocaleString()}
+            {formatTime(timeSlot.startTime)} –{" "}
+            {formatTime(timeSlot.endTime)}
           </p>
         </div>
 
-        <div className="mb-3">
+        <div>
           <h5 className="mb-1 text-secondary">Doctor</h5>
           <p className="mb-0 fw-medium">{doctor.fullName}</p>
         </div>
 
         {showNotes && (
-          <div className="mt-4">
+          <div>
             <h5 className="mb-2 text-secondary">Notes</h5>
             {editNotes ? (
               <div className="d-flex flex-column gap-1">

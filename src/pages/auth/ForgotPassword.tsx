@@ -10,6 +10,7 @@ function ForgotPassword() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  // Request backend to send pw reset form to email
   const handleClickForgotPassword = async () => {
     try {
       setLoading(true)

@@ -22,27 +22,23 @@ function Login() {
   const navigate = useNavigate();
   const { user, logIn } = useAuth();
 
-  // If user is logged in, navigate to their respective home screens
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user]);
+  // If user already logged, navigate to dashboard
+  if (user) return <Navigate to={"/"} replace />;
 
+  // Log in user
   const handleSubmit = async () => {
-    setErrors([]);
-    setLoading(true);
-
-    // Check for form errors
-    const validationErrors = validateForm(email, password);
-    if (validationErrors.length > 0) {
-      setLoading(false);
-      setErrors(validationErrors);
-      return;
-    }
-
     // Login user
     try {
+      setErrors([]);
+      setLoading(true);
+
+      // Check for form errors
+      const validationErrors = validateForm(email, password);
+      if (validationErrors.length > 0) {
+        setLoading(false);
+        setErrors(validationErrors);
+        return;
+      }
       const dto: UserLoginDto = {
         Email: email,
         Password: password,
@@ -74,63 +70,65 @@ function Login() {
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Login</h2>
+    <div className="container vh-100 d-flex justify-content-center align-items-center">
+      <div className="mx-auto bg-light p-4 rounded border border-2 border-black col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+        <h2>Login</h2>
 
-      <ErrorsBox errors={errors} />
+        <ErrorsBox errors={errors} />
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-      >
-        <div className="mb-3">
-          <label>Email</label>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="form-control"
-            required
-            disabled={loading}
-          />
-        </div>
-        <div className="mb-3">
-          <label>Password</label>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="form-control"
-            required
-            disabled={loading}
-            type="password"
-          />
-        </div>
-        <button type="submit" className="btn btn-success" disabled={loading}>
-          Login
-        </button>
-      </form>
-
-      <p className="mt-4 mb-0">
-        Forgot password?{" "}
-        <span
-          className="link-primary"
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/forgot-password")}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
         >
-          Click here
-        </span>
-      </p>
-      <p>
-        Don't have an account?{" "}
-        <span
-          className="link-primary"
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/register")}
-        >
-          Signup
-        </span>
-      </p>
+          <div className="mb-3">
+            <label>Email</label>
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-control"
+              required
+              disabled={loading}
+            />
+          </div>
+          <div className="mb-3">
+            <label>Password</label>
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-control"
+              required
+              disabled={loading}
+              type="password"
+            />
+          </div>
+          <button type="submit" className="btn btn-success" disabled={loading}>
+            Login
+          </button>
+        </form>
+
+        <p className="mt-4 mb-0">
+          Forgot password?{" "}
+          <span
+            className="link-primary"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/forgot-password")}
+          >
+            Click here
+          </span>
+        </p>
+        <p>
+          Don't have an account?{" "}
+          <span
+            className="link-primary"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/register")}
+          >
+            Signup
+          </span>
+        </p>
+      </div>
     </div>
   );
 }

@@ -116,7 +116,6 @@ function BookAppointment() {
       <TimeSlotTable
         timeSlots={availableTimeSlotDtos}
         patientUse={true}
-        selectedTS={selectedSlot}
         selectAction={selectTSRow}
       />
       <div className="mt-4 text-end">

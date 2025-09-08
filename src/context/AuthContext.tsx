@@ -41,10 +41,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   //   setLoadingUser(false)
   // }, []);
 
-  useEffect(() => {
-    console.log("calling for auth context. user: ", user)
-  },[])
-
   const logIn = (userData: AuthUser) => {
     localStorage.setItem(LOCAL_STORAGE_AUTH_KEY, JSON.stringify(userData));
     setUser(userData);

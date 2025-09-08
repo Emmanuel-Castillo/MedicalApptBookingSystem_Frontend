@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import AdminDashboard from "./AdminDashboard";
 import { Navigate } from "react-router-dom";
 import DoctorDetails from "./doctors/DoctorDetails";
 import PatientDetails from "./patients/PatientDetails";
+import AdminDashboard from "./admin/AdminDashboard";
 
 function Home() {
   const { user } = useAuth();

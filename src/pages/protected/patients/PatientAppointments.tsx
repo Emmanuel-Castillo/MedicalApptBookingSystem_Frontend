@@ -8,16 +8,13 @@ import AppointmentBox from "../../../components/AppointmentBox";
 import api from "../../../api/axios";
 import AppointmentTable from "../../../components/AppointmentTable";
 
-function AllAppointments() {
+function PatientsAppointments() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const [appointmentsData, setAppointmentsData] =
     useState<GetPatientsAppointmentsResponse | null>();
   const [loadingData, setLoadingData] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
-  const [selectedAppt, setSelectedAppt] = useState<AppointmentDto | null>();
-  const [showModal, setShowModal] = useState(false);
 
   // API time slot pagination states
   const [page, setPage] = useState(1);
@@ -53,17 +50,6 @@ function AllAppointments() {
     fetchPageOfAllAppts()
   }, [page, pageSize]);
 
-  const deleteTimeSlot = async (apptId: number) => {
-    try {
-      await api.delete(`/appointments/${apptId}`);
-      navigate(0);
-    } catch (error: any) {
-      const serverMessage =
-        error.response.data || error.message || "Appointment booking failed!";
-      setErrors([serverMessage]);
-    }
-  };
-
   if (loadingData) return <p>Loading time slot data...</p>;
   if (!appointmentsData) return <p>Time slot data not found!</p>;
 
@@ -72,17 +58,6 @@ function AllAppointments() {
   return (
     <div className="mt-5">
       <ErrorsBox errors={errors} />
-      {showModal && selectedAppt && (
-        <Modal
-          title={"Delete Appointment"}
-          body={<AppointmentBox appt={selectedAppt}/>}
-          confirmText={"Yes, Delete It"}
-          onCancel={() => setShowModal(false)}
-          onConfirm={() => {
-            deleteTimeSlot(selectedAppt.id);
-          }}
-        />
-      )}
 
       <div className="d-flex flex-wrap mb-3">
         <h2 className="me-5">All Appointments</h2>
@@ -106,13 +81,9 @@ function AllAppointments() {
 
       <AppointmentTable
         appointments={appointments}
-        deleteAction={(appt: AppointmentDto) => {
-            setSelectedAppt(appt)
-            setShowModal(true)
-        }}
       />
     </div>
   );
 }
 
-export default AllAppointments;
+export default PatientsAppointments;

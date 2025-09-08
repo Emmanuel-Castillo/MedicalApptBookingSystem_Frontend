@@ -4,6 +4,11 @@ import { DayOfWeek, DoctorAvailabilityDto } from "../../../types/dtos";
 import api from "../../../api/axios";
 import { SetDoctorAvailRequest } from "../../../types/requests";
 import ErrorsBox from "../../../components/ErrorsBox";
+import {
+  formatDate,
+  formatTime,
+  OPEN_HOURS,
+} from "../../../utils/FormatDateAndTime";
 
 const AVAILABLE_HOURS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -11,13 +16,13 @@ function SetAvailability() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [availabilityThisWeek, setAvailabilityThisWeek] = useState<DoctorAvailabilityDto[]>([]);
+  const [availabilityThisWeek, setAvailabilityThisWeek] = useState<
+    DoctorAvailabilityDto[]
+  >([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [daysOfWeek, setDaysOfWeek] = useState<DayOfWeek[]>([]);
-  const [startTimeHr, setStartTimeHr] = useState(6); // Default start time is 6:00AM
-  const [startTimeIsPm, setStartTimeIsPm] = useState(false);
-  const [endTimeHr, setEndTimeHr] = useState(6); // Default end time is 6:00PM
-  const [endTimeIsPm, setEndTimeIsPm] = useState(true);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [formReady, setFormReady] = useState(false);
@@ -54,11 +59,17 @@ function SetAvailability() {
   }, []);
 
   // If all form inputs are set, set formReady
-  // startTime, endTime, startTimeIsPm, and endTimeIsPm will always be truthy
   useEffect(() => {
-    if (daysOfWeek && startDate && endDate) setFormReady(true);
-    else setFormReady(false);
-  }, [daysOfWeek, startDate, endDate]);
+    console.log({
+      daysOfWeek,
+      startDate,
+      endDate,
+      startTime,
+      endTime
+    }
+    )
+    setFormReady(daysOfWeek && startDate && endDate && startTime && endTime ? true : false);
+  }, [daysOfWeek, startDate, endDate, startTime, endTime]);
 
   // Add/remove day of week from state list
   const toggleDayinDaysOfWeek = (day: DayOfWeek) => {
@@ -70,62 +81,38 @@ function SetAvailability() {
     }
   };
 
-  // Utility function to setup Dto
-  // Setting hour value into a formatted string "HH:mm:ss"
-  function formatTimeForDto(hour: number, isPm: boolean): string {
-    let adjusted = hour % 12; // convert 12 -> 0
-    if (isPm) adjusted += 12;
-    return adjusted.toString().padStart(2, "0") + ":00:00";
-  }
-
   const onFormSubmit = async () => {
     try {
       setErrors([]);
       setLoading(true);
 
       // Validate request arguments
-      if (endTimeIsPm === startTimeIsPm) {
-        if (endTimeHr === startTimeHr)
-          throw Error("End time is the same as start time!");
-        if (endTimeHr < startTimeHr)
-          throw Error("End time is set before start time!");
-      }
-      if (endDate < startDate) {
+      if (endTime === startTime)
+        throw Error("End time is the same as start time!");
+      if (endTime < startTime)
+        throw Error("End time is set before start time!");
+      if (endDate < startDate)
         throw Error("End date is set before start date!");
-      }
 
       const docAvailRequest: SetDoctorAvailRequest = {
         doctorId: Number(id!!),
         daysOfWeek: daysOfWeek,
-        startTime: formatTimeForDto(startTimeHr, startTimeIsPm),
-        endTime: formatTimeForDto(endTimeHr, endTimeIsPm),
+        startTime: startTime + ":00",
+        endTime: endTime + ":00",
         startDate: startDate,
         endDate: endDate,
       };
 
       await api.post("/availability", docAvailRequest);
-      navigate(-1);
+      navigate(-1);   
     } catch (error: any) {
-      console.log(error.response.data)
+      console.log(error.response.data);
       const message = error.response.data || error.message || "Invalid inputs!";
       setErrors([message]);
     } finally {
       setLoading(false);
     }
   };
-
-  // Utility function to display received availability times to AM/PM format
-  function formatGivenTime(time24h: string) {
-    const [hourString, minute, second] = time24h.split(":");
-    let hour = parseInt(hourString, 10);
-    const ampm = hour > 12 ? "PM" : "AM";
-
-    // Adjust hour for 12-hour format
-    hour = hour % 12;
-    hour = hour === 0 ? 12 : hour; // Convert 0 (midnight) to 12
-
-    return `${hour}:${minute} ${ampm}`;
-  }
 
   return (
     <div className="container mt-5 d-flex flex-column gap-3">
@@ -151,10 +138,10 @@ function SetAvailability() {
                 {availabilityThisWeek.map((a) => (
                   <tr key={a.id}>
                     <td>{a.dayOfWeek}</td>
-                    <td>{formatGivenTime(a.startTime)}</td>
-                    <td>{formatGivenTime(a.endTime)}</td>
-                    <td>{new Date(a.startDate).toLocaleDateString()}</td>
-                    <td>{new Date(a.endDate).toLocaleDateString()}</td>
+                    <td>{formatTime(a.startTime)}</td>
+                    <td>{formatTime(a.endTime)}</td>
+                    <td>{formatDate(a.startDate)}</td>
+                    <td>{formatDate(a.endDate)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -195,90 +182,31 @@ function SetAvailability() {
           {/* START & END TIME */}
           <div className="d-flex flex-wrap gap-3">
             {/* START TIME */}
-            <div className="form-group">
+            <div className="d-flex flex-column">
               <label className="form-label">Start Time</label>
-              <div className="d-flex flex-wrap align-items-center gap-2">
-                <select
-                  className="form-select-sm"
-                  onChange={(e) => setStartTimeHr(Number(e.target.value))}
-                  defaultValue={startTimeHr}
-                >
-                  {AVAILABLE_HOURS.map((hr) => (
-                    <option key={hr} value={hr}>
-                      {hr}:00
-                    </option>
-                  ))}
-                </select>
-
-                <div className="d-flex align-items-center gap-1">
-                  <input
-                    type="radio"
-                    name="StartTimeTOD"
-                    id="StartTimeAM"
-                    checked={!startTimeIsPm}
-                    onChange={() => setStartTimeIsPm(false)}
-                  />
-                  <label htmlFor="StartTimeAM" className="mb-0">
-                    AM
-                  </label>
-                </div>
-
-                <div className="d-flex align-items-center gap-1">
-                  <input
-                    type="radio"
-                    name="StartTimeTOD"
-                    id="StartTimePM"
-                    checked={startTimeIsPm}
-                    onChange={() => setStartTimeIsPm(true)}
-                  />
-                  <label htmlFor="StartTimePM" className="mb-0">
-                    PM
-                  </label>
-                </div>
-              </div>
+              <select
+                className="form-select"
+                onChange={(e) => setStartTime(e.target.value)}
+              >
+                <option value="">Select a time</option>
+                {OPEN_HOURS.map((hr) => (
+                  <option value={hr}>{formatTime(hr)}</option>
+                ))}
+              </select>
             </div>
 
             {/* END TIME */}
-            <div className="form-group">
+            <div className="d-flex flex-column">
               <label className="form-label">End Time</label>
-              <div className="d-flex flex-wrap align-items-center gap-2">
-                <select
-                  className="form-select-sm"
-                  onSelect={(e) => setEndTimeHr(Number(e.currentTarget.value))}
-                  defaultValue={endTimeHr}
-                >
-                  {AVAILABLE_HOURS.map((hr) => (
-                    <option key={hr} value={hr}>
-                      {hr}:00
-                    </option>
-                  ))}
-                </select>
-
-                <div className="d-flex align-items-center gap-1">
-                  <input
-                    type="radio"
-                    name="EndTimeTOD"
-                    id="EndTimeAM"
-                    checked={!endTimeIsPm}
-                    onChange={() => setEndTimeIsPm(false)}
-                  />
-                  <label className="mb-0" htmlFor="EndTimeAM">
-                    AM
-                  </label>
-                </div>
-                <div className="d-flex align-items-center gap-1">
-                  <input
-                    type="radio"
-                    name="EndTimeTOD"
-                    id="EndTimePM"
-                    checked={endTimeIsPm}
-                    onChange={() => setEndTimeIsPm(true)}
-                  />
-                  <label className="mb-0" htmlFor="EndTimePM">
-                    PM
-                  </label>
-                </div>
-              </div>
+              <select
+                className="form-select"
+                onChange={(e) => setEndTime(e.target.value)}
+              >
+                <option value="">Select a time</option>
+                {OPEN_HOURS.filter((hr) => hr > startTime).map((hr) => (
+                  <option value={hr}>{formatTime(hr)}</option>
+                ))}
+              </select>
             </div>
           </div>
 

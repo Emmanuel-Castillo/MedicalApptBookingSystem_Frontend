@@ -3,14 +3,12 @@ import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import ProtectedLayout from "./components/ProtectedLayout";
 import Home from "./pages/protected/Home";
-import EditUser from "./pages/protected/EditUser";
 import DoctorDetails from "./pages/protected/doctors/DoctorDetails";
 import AllTimeSlots from "./pages/protected/doctors/AllTimeSlots";
 import TimeSlotDetails from "./pages/protected/doctors/TimeSlotDetails";
 import CreateTimeSlots from "./pages/protected/doctors/CreateTimeSlots";
 import PatientDetails from "./pages/protected/patients/PatientDetails";
 import AppointmentDetails from "./pages/protected/patients/AppointmentDetails";
-import AllAppointments from "./pages/protected/patients/AllApppointments";
 import BookAppointment from "./pages/protected/patients/BookAppointment";
 import SetAvailability from "./pages/protected/doctors/SetAvailability";
 import ForgotPassword from "./pages/auth/ForgotPassword";
@@ -18,6 +16,12 @@ import PasswordChangeRequested from "./pages/auth/PasswordChangeRequested";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+
+import AllAppointments from "./pages/protected/admin/AllAppointments";
+import PatientsAppointments from "./pages/protected/patients/PatientAppointments";
+import AllDoctors from "./pages/protected/admin/AllDoctors";
+import AddDoctor from "./pages/protected/admin/AddDoctor";
+import EditUser from "./pages/protected/admin/EditUser";
 
 function App() {
   return (
@@ -30,6 +34,31 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={["Admin", "Doctor", "Patient"]}>
                   <Home />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/all-appointments"
+              element={
+                <PrivateRoute allowedRoles={["Admin"]}>
+                  <AllAppointments/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/all-doctors"
+              element={
+                <PrivateRoute allowedRoles={["Admin"]}>
+                  <AllDoctors/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/add-doctor"
+              element={
+                <PrivateRoute allowedRoles={["Admin"]}>
+                  <AddDoctor/>
                 </PrivateRoute>
               }
             />
@@ -96,7 +125,7 @@ function App() {
               path="/patients/:id/appointments"
               element={
                 <PrivateRoute allowedRoles={["Admin", "Patient"]}>
-                  <AllAppointments/>
+                  <PatientsAppointments/>
                 </PrivateRoute>
               }
             />

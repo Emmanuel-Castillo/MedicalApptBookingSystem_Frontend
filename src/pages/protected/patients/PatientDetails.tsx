@@ -5,10 +5,11 @@ import { GetPatientInfoResponse } from "../../../types/responses";
 import { AppointmentDto } from "../../../types/dtos";
 import api from "../../../api/axios";
 import ErrorsBox from "../../../components/ErrorsBox";
-import UserDetails from "../../../components/UserDetails";
+import UserDetails from "../../../components/PatientProfileDetails";
 import AppointmentTable from "../../../components/AppointmentTable";
 import Modal from "../../../components/Modal";
 import AppointmentBox from "../../../components/AppointmentBox";
+import PatientProfileDetails from "../../../components/PatientProfileDetails";
 
 // Component accessible for Patients and Admins ONLY
 function PatientDetails() {
@@ -18,10 +19,7 @@ function PatientDetails() {
 
   const [patientInfo, setPatientInfo] = useState<GetPatientInfoResponse | null>(null);
   const [loadingPatientInfo, setLoadingPatientInfo] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedAppt, setSelectedAppt] = useState<AppointmentDto | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
-
 
   // Invoke useEffect components mounts
   useEffect(() => {
@@ -51,52 +49,14 @@ function PatientDetails() {
   if (loadingPatientInfo) return <div>Loading patient details...</div>;
   if (!patientInfo) return <div>Patient details not found.</div>;
 
-  const { patient: Patient, appointmentsThisWeek: AppointmentsThisWeek } = patientInfo;
-
-  const onClickDeleteBtn = (appt: AppointmentDto) => {
-    setSelectedAppt(appt);
-    setShowModal(true);
-  };
-
-  const confirmDeleteApptInModal = async (appt: AppointmentDto) => {
-    try {
-      await api.delete(`appointments/${appt.id}`);
-      navigate(0);
-    } catch (error: any) {
-      const serverMessage =
-        error.response.data || error.message || "Appointment booking failed!";
-      setErrors([serverMessage]);
-    }
-  };
+  const { patientProfile, appointmentsThisWeek } = patientInfo;
+  const { user: patient } = patientProfile
 
   return (
-    <div className="d-flex flex-column gap-3">
-      {showModal && selectedAppt && (
-        <Modal
-          title={"Delete Appointment"}
-          body={<AppointmentBox appt={selectedAppt} />}
-          confirmText={"Yes, Delete It"}
-          onCancel={() => setShowModal(false)}
-          onConfirm={() => confirmDeleteApptInModal(selectedAppt)}
-        />
-      )}
-
+    <div className="container mt-5 d-flex flex-column gap-3">
       <ErrorsBox errors={errors}/>
 
-      <div className="bg-light p-3 rounded border mb-5">
-        <div className="d-flex flex-wrap align-items-center mb-3">
-          <h2 className="me-5">User Details</h2>
-          {user!.role == "Admin" && (
-            <button
-              className="btn btn-primary"
-              onClick={() => navigate(`/users/${Patient.id}/edit-user`)}
-            >
-              Edit User
-            </button>
-          )}
-        </div>
-        <UserDetails user={Patient} />
-      </div>
+      <PatientProfileDetails profile={patientProfile} allowNavigation={user!.role === "Admin"}/>
 
       <div className="col">
         <div className="d-flex flex-wrap mb-2 align-items-center mb-3">
@@ -104,13 +64,13 @@ function PatientDetails() {
           <div className="d-flex flex-wrap gap-2">
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/patients/${Patient.id}/book-appointment`)}
+              onClick={() => navigate(`/patients/${patient.id}/book-appointment`)}
             >
               Create New
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/patients/${Patient.id}/appointments`)}
+              onClick={() => navigate(`/patients/${patient.id}/appointments`)}
             >
               View All
             </button>
@@ -118,8 +78,7 @@ function PatientDetails() {
         </div>
         <h6>Booked - This Week</h6>
         <AppointmentTable
-          appointments={AppointmentsThisWeek}
-          deleteAction={(appt: AppointmentDto) => onClickDeleteBtn(appt)}
+          appointments={appointmentsThisWeek}
         />
       </div>
     </div>

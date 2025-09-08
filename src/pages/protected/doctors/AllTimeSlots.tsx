@@ -77,7 +77,7 @@ function AllTimeSlots() {
   const { timeSlotDtos, totalCount } = timeSlotData;
 
   return (
-    <div className="mt-5">
+    <div className="container mt-5">
       <ErrorsBox errors={errors} />
       {showModal && selectedTS && (
         <Modal
@@ -113,10 +113,6 @@ function AllTimeSlots() {
 
       <TimeSlotTable
         timeSlots={timeSlotDtos}
-        deleteAction={(ts: TimeSlotDto) => {
-          setSelectedTS(ts);
-          setShowModal(true);
-        }}
       />
     </div>
   );

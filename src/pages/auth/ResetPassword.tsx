@@ -20,6 +20,7 @@ function ResetPassword() {
   const token = searchParams.get("token");
   if (!token) return <Navigate to={"/"} />;
 
+  // Update user's new pw to backend
   const handleChangePWBtnClick = async () => {
     try {
       if (newPassword.length === 0) return;

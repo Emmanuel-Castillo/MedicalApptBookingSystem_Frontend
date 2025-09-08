@@ -10,7 +10,6 @@ const Register = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("Patient");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -20,20 +19,21 @@ const Register = () => {
   // If user already logged, navigate to dashboard
   if (user) return <Navigate to={"/"} replace />;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrors([]);
-    setLoading(true);
-
-    // Check for form errors
-    const validationErrors = validateForm(email, password, fullName, role);
-    if (validationErrors.length > 0) {
-      setLoading(false);
-      setErrors(validationErrors);
-      return;
-    }
-
+  // Register user
+  const handleSubmit = async () => {
     try {
+      setErrors([]);
+      setLoading(true);
+
+      // Check for form errors
+      const validationErrors = validateForm(email, password, fullName);
+      if (validationErrors.length > 0) {
+        setLoading(false);
+        setErrors(validationErrors);
+        return;
+      }
+
+      const role: UserRole = "Patient";
       const dto: UserRegisterDto = {
         FullName: fullName,
         Email: email,
@@ -52,63 +52,61 @@ const Register = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Register</h2>
+    <div className="container vh-100 d-flex justify-content-center align-items-center">
+      <div className="mx-auto bg-light p-4 rounded border border-2 border-black col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+        <h2>Register</h2>
 
-      <ErrorsBox errors={errors} />
+        <ErrorsBox errors={errors} />
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label>Full Name</label>
-          <input
-            value={fullName}
-            className="form-control"
-            onChange={(e) => setFullName(e.target.value)}
-            required
-            disabled={loading}
-          />
-        </div>
-        <div className="mb-3">
-          <label>Email</label>
-          <input
-            value={email}
-            className="form-control"
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={loading}
-            type="email"
-          />
-        </div>
-        <div className="mb-3">
-          <label>Password</label>
-          <input
-            value={password}
-            className="form-control"
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={loading}
-            type="password"
-          />
-        </div>
-        <div className="mb-3">
-          <label>Role</label>
-          <select
-            value={role}
-            className="form-select"
-            onChange={(e) => setRole(e.target.value as UserRole)}
-            disabled={loading}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label>Full Name</label>
+            <input
+              value={fullName}
+              className="form-control"
+              onChange={(e) => setFullName(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+          <div className="mb-3">
+            <label>Email</label>
+            <input
+              value={email}
+              className="form-control"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+              type="email"
+            />
+          </div>
+          <div className="mb-3">
+            <label>Password</label>
+            <input
+              value={password}
+              className="form-control"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+              type="password"
+            />
+          </div>
+          <button className="btn btn-primary" disabled={loading}>
+            Register
+          </button>
+        </form>
+
+        <p>
+          Already have an account?{" "}
+          <span
+            className="link-primary"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/login")}
           >
-            <option value={"Patient"}>Patient</option>
-            <option value={"Doctor"}>Doctor</option>
-            <option value={"Admin"}>Admin</option>
-          </select>
-        </div>
-        <button className="btn btn-primary" disabled={loading}>
-          Register
-        </button>
-      </form>
-
-      <p>Already have an account? <span className="link-primary" style={{cursor: "pointer"}} onClick={() => navigate("/login")}>Login</span></p>
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

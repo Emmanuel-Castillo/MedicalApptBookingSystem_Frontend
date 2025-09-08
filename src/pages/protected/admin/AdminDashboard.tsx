@@ -1,9 +1,9 @@
 import React, { use, useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/axios";
-import { UserDto, UserRole } from "../../types/dtos";
-import ErrorsBox from "../../components/ErrorsBox";
+import { UserDto } from "../../../types/dtos";
+import ErrorsBox from "../../../components/ErrorsBox";
+import api from "../../../api/axios";
 
 function AdminDashboard() {
   const { user } = useAuth();
@@ -13,6 +13,7 @@ function AdminDashboard() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
 
+  // Retrieve all users on first mount
   useEffect(() => {
     const getUsers = async () => {
       try {
@@ -31,6 +32,7 @@ function AdminDashboard() {
     getUsers();
   }, []);
 
+  // Navigate to selected user's page
   const handleUserClick = (user: UserDto) => {
     switch (user.role) {
       case "Patient":

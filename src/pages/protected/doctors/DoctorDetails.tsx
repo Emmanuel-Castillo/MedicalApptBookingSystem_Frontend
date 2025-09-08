@@ -7,8 +7,9 @@ import api from "../../../api/axios";
 import Modal from "../../../components/Modal";
 import TimeSlotCard from "../../../components/TimeSlotCard";
 import ErrorsBox from "../../../components/ErrorsBox";
-import UserDetails from "../../../components/UserDetails";
+import UserDetails from "../../../components/PatientProfileDetails";
 import TimeSlotTable from "../../../components/TimeSlotTable";
+import DoctorProfileDetails from "../../../components/DoctorProfileDetails";
 
 // Component accessible for Doctors and Admins ONLY
 function DoctorDetails() {
@@ -65,7 +66,8 @@ function DoctorDetails() {
     }
   }
 
-  const { doctor, upcomingTimeSlots } = doctorInfo;
+  const { doctorProfile, bookedTimeSlotsNextTwoWeeks } = doctorInfo;
+  const { user: doctor } = doctorProfile
 
   return (
     <div className="container mt-4">
@@ -81,20 +83,7 @@ function DoctorDetails() {
 
       <ErrorsBox errors={errors}/>
 
-      <div className="bg-light p-3 rounded border mb-5">
-        <div className="d-flex flex-wrap align-items-center mb-3">
-          <h2 className="me-5">User Details</h2>
-          {user!.role == "Admin" && (
-            <button
-              className="btn btn-primary"
-              onClick={() => navigate(`users/${doctor.id}/edit-user`)}
-            >
-              Edit User
-            </button>
-          )}
-        </div>
-        <UserDetails user={doctor} />
-      </div>
+      <DoctorProfileDetails profile={doctorProfile} allowNavigation={user!.role === "Admin"}/>
 
       <div className="col">
         <div className="d-flex flex-wrap mb-2 align-items-center mb-3">
@@ -121,7 +110,7 @@ function DoctorDetails() {
           </div>
         </div>
         <h6>Booked - Next Two Weeks</h6>
-        <TimeSlotTable timeSlots={upcomingTimeSlots} />
+        <TimeSlotTable timeSlots={bookedTimeSlotsNextTwoWeeks} />
       </div>
     </div>
   );

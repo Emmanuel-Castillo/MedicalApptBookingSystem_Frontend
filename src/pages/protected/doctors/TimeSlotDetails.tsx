@@ -43,7 +43,7 @@ function TimeSlotDetails() {
   const canEditNotes = user!.role === "Admin" ? true : user!.role === "Doctor" ? timeSlot.doctor.id === Number(user!.id) : false
 
   return (
-    <div className="d-flex flex-column mt-5 gap-5">
+    <div className="container d-flex flex-column mt-5 gap-5">
       <ErrorsBox errors={errors} />
 
       <TimeSlotCard timeSlot={timeSlot} />
