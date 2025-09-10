@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { AppointmentDto } from "../../../types/dtos";
 import api from "../../../api/axios";
 import { GetAllAppointmentsResponse } from "../../../types/responses";
 import AppointmentTable from "../../../components/AppointmentTable";
 import Paginator from "../../../components/Paginator";
-import { useNavigate } from "react-router-dom";
 import ErrorsBox from "../../../components/ErrorsBox";
 
 function AllAppointments() {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import { AuthUser, useAuth } from "../../context/AuthContext";
 import { validateForm } from "../../utils/ValidateAuthForm";

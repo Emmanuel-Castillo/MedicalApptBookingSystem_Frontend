@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router";
 import { UserRegisterDto, UserRole } from "../../types/dtos";
 import { useAuth } from "../../context/AuthContext";
 import { validateForm } from "../../utils/ValidateAuthForm";

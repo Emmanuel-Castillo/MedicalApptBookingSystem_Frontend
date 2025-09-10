@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UserRegisterDto, UserRole } from "../../../types/dtos";
 import api from "../../../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { validateForm } from "../../../utils/ValidateAuthForm";
 
 function AddDoctor() {

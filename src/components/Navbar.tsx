@@ -18,16 +18,16 @@ type NavbarProps = {
 };
 function Navbar({ fullName, role, logOut }: NavbarProps) {
   return (
-    <nav className="navbar navbar-expand-md bg-body-secondary">
+    <nav className="navbar navbar-expand-md bg-body-secondary" data-testid={fullName + " navbar"}>
       <div className="container-fluid">
         <div className="navbar-brand text-wrap">
           <strong>{fullName}</strong> ({role})
         </div>
         {role == "Patient" && (
           <div className="collapse navbar-collapse" id="navbarToggler">
-            <div className="navbar-nav">
-              {patientNavLinks.map((n) => (
-                <a className="nav-link" aria-current="page" href={n.link}>
+            <div className="navbar-nav" data-testid={role + " navlinks"}>
+              {patientNavLinks.map((n, idx) => (
+                <a key={idx} className="nav-link" aria-current="page" href={n.link}>
                   {n.name}
                 </a>
               ))}
@@ -69,7 +69,7 @@ function Navbar({ fullName, role, logOut }: NavbarProps) {
               </li>
               <div className="dropdown-divider"></div>
               <li>
-                <button className="dropdown-item" onClick={logOut}>
+                <button className="dropdown-item" onClick={logOut} data-testid={"logout-btn"}>
                   Logout
                 </button>
               </li>

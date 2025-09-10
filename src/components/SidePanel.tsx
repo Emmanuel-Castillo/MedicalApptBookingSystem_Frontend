@@ -26,6 +26,7 @@ function SidePanel({ role }: SidePanelProps) {
   return (
     <div
       className="d-flex h-100 p-3 text-white bg-dark collapse"
+      data-testid={role + " sidepanel"}
     >
       <ul className="nav nav-pills flex-column">
         {panelLinks.map((p, idx) => (

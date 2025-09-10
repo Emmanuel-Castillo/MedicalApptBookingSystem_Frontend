@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ForgotPasswordRequest } from "../../types/requests";
 import ErrorsBox from "../../components/ErrorsBox";
 import api from "../../api/axios";
