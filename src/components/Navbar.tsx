@@ -20,11 +20,11 @@ function Navbar({ fullName, role, logOut }: NavbarProps) {
   return (
     <nav className="navbar navbar-expand-md bg-body-secondary" data-testid={fullName + " navbar"}>
       <div className="container-fluid">
-        <div className="navbar-brand text-wrap">
+        <div className="navbar-brand text-wrap" data-testid={"navbar-fullName"}>
           <strong>{fullName}</strong> ({role})
         </div>
         {role == "Patient" && (
-          <div className="collapse navbar-collapse" id="navbarToggler">
+          <div className="collapse navbar-collapse" id="navbarToggler" data-testid={"patient-navLinks"}>
             <div className="navbar-nav" data-testid={role + " navlinks"}>
               {patientNavLinks.map((n, idx) => (
                 <a key={idx} className="nav-link" aria-current="page" href={n.link}>

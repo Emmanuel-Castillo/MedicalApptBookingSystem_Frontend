@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import {
   Navigate,
   useNavigate,
-  useParams,
   useSearchParams,
-} from "react-router";
+} from "react-router-dom";
 import { ResetPasswordRequest } from "../../types/requests";
 import api from "../../api/axios";
 import ErrorsBox from "../../components/ErrorsBox";

@@ -13,6 +13,7 @@ function Paginator({page, setPage, pageSize, totalCount}: PaginatorProps) {
             className="btn btn-outline-primary"
             disabled={page === 1}
             onClick={() => setPage(page - 1)}
+            data-testid={"previous-btn"}
           >
             Previous
           </button>
@@ -20,6 +21,7 @@ function Paginator({page, setPage, pageSize, totalCount}: PaginatorProps) {
             className="btn btn-outline-primary"
             disabled={page * pageSize >= totalCount}
             onClick={() => setPage(page + 1)}
+            data-testid={"next-btn"}
           >
             Next
           </button>

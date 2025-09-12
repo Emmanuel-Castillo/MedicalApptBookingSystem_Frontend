@@ -16,14 +16,15 @@ function Modal({ onConfirm, onCancel, title, body, confirmText, loading }: Modal
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">{title}</h5>
+            <h5 className="modal-title" data-testid={"modal-title"}>{title}</h5>
           </div>
-          <div className="modal-body">{loading ? "Loading..." : body}</div>
+          <div className="modal-body" data-testid={"modal-body"}>{loading ? "Loading..." : body}</div>
               <div className="modal-footer">
                 <button
                   className="btn btn-primary"
                   onClick={onConfirm}
                   disabled={loading}
+                  data-testid={"modal-confirmBtn"}
                 >
                   {confirmText}
                 </button>
@@ -31,6 +32,7 @@ function Modal({ onConfirm, onCancel, title, body, confirmText, loading }: Modal
                   className="btn btn-secondary"
                   onClick={onCancel}
                   disabled={loading}
+                  data-testid={"modal-cancelBtn"}
                 >
                   Cancel
                 </button>

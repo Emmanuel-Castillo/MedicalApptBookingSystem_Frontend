@@ -1,4 +1,4 @@
-import { Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import PrivateRoute from "../components/PrivateRoute";
 import AllAppointments from "../pages/protected/admin/AllAppointments";
 import AllDoctors from "../pages/protected/admin/AllDoctors";

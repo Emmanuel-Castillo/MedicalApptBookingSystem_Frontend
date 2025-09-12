@@ -6,7 +6,7 @@ const ErrorsBox = ({ errors }: ErrorsBoxProps) => {
   return (
     <>
       {errors.length > 0 && (
-        <div className="alert alert-danger">
+        <div className="alert alert-danger" data-testid={"errorsbox"}>
           <h2>Error</h2>
           <ul className="mb-0">
             {errors.map((err, i) => (
