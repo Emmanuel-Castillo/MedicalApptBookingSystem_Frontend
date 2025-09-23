@@ -46,7 +46,7 @@ function PatientDetails() {
   if (!patientInfo) return <div>Patient details not found.</div>;
 
   const { patientProfile, appointmentsThisWeek } = patientInfo;
-  const { user: patient } = patientProfile
+  const { user: patient, id: patientId } = patientProfile
 
   return (
     <div className="container mt-5 d-flex flex-column gap-3">
@@ -60,13 +60,13 @@ function PatientDetails() {
           <div className="d-flex flex-wrap gap-2">
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/patients/${patient.id}/book-appointment`)}
+              onClick={() => navigate(`/patients/${patientId}/book-appointment`)}
             >
               Create New
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/patients/${patient.id}/appointments`)}
+              onClick={() => navigate(`/patients/${patientId}/appointments`)}
             >
               View All
             </button>

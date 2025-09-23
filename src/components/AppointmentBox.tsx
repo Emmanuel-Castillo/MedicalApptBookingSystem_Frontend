@@ -75,7 +75,7 @@ function AppointmentBox({
 
         <div>
           <h5 className="mb-1 text-secondary">Patient</h5>
-          <p className="mb-0 fw-medium">{patient.fullName}</p>
+          <p className="mb-0 fw-medium">{patient.user.fullName}</p>
         </div>
 
         <div>
@@ -93,7 +93,7 @@ function AppointmentBox({
 
         <div>
           <h5 className="mb-1 text-secondary">Doctor</h5>
-          <p className="mb-0 fw-medium">{doctor.fullName}</p>
+          <p className="mb-0 fw-medium">{doctor.user.fullName}</p>
         </div>
 
         {showNotes && (

@@ -3,7 +3,11 @@ import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import SidePanel from "./SidePanel";
 
-function ProtectedLayout() {
+type ProtectedLayoutProps = {
+  theme: string;
+  toggleDarkMode: () => void;
+}
+function ProtectedLayout({ theme, toggleDarkMode }: ProtectedLayoutProps) {
   const { user, logOut } = useAuth();
   const navigate = useNavigate();
 
@@ -18,7 +22,7 @@ function ProtectedLayout() {
       className={user.role == "Patient" ? "" : "d-flex flex-column min-vh-100"}
     >
       {/* Navbar */}
-      <Navbar fullName={user.fullName} role={user.role} logOut={handleLogOut} />
+      <Navbar fullName={user.fullName} role={user.role} logOut={handleLogOut} theme={theme} toggleDarkMode={toggleDarkMode}/>
 
       {/* Main content */}
       {user.role == "Patient" ? (

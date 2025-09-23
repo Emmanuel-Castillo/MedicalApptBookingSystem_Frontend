@@ -20,7 +20,7 @@ export type TimeSlotDto = {
   startTime: string;
   endTime: string;
   isBooked: boolean;
-  doctor: UserDto;
+  doctor: DoctorProfileDto;
 };
 
 export type AppointmentDto = {
@@ -28,7 +28,7 @@ export type AppointmentDto = {
   timeSlotId: number;
   timeSlot: TimeSlotDto;
   patientId: number;
-  patient: UserDto;
+  patient: PatientProfileDto;
   notes?: string;
 };
 

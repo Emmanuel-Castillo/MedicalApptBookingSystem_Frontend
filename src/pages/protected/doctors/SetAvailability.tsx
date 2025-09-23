@@ -118,7 +118,7 @@ function SetAvailability() {
     <div className="container mt-5 d-flex flex-column gap-3">
       <ErrorsBox errors={errors} />
 
-      <div className="d-flex flex-column gap-3 bg-light p-3 rounded border">
+      <div className="d-flex flex-column gap-3 bg-light-subtle p-3 rounded border">
         <h3>Availability - This Week</h3>
         {availabilityThisWeek.length === 0 ? (
           <p>No availability set.</p>
@@ -150,7 +150,7 @@ function SetAvailability() {
         )}
       </div>
 
-      <div className="d-flex flex-column gap-3 bg-light p-3 rounded border">
+      <div className="d-flex flex-column gap-3 bg-light-subtle p-3 rounded border">
         <h2>Set New Availability (currently in development)</h2>
 
         <form
@@ -166,6 +166,7 @@ function SetAvailability() {
             <div className="d-flex flex-wrap gap-1">
               {DAYS_OF_WEEK_TO_LIST.map(([key, value]) => (
                 <button
+                  key={key}
                   type="button"
                   onClick={() => toggleDayinDaysOfWeek(value as DayOfWeek)}
                   className={`btn btn-outline-secondary ${
@@ -189,8 +190,8 @@ function SetAvailability() {
                 onChange={(e) => setStartTime(e.target.value)}
               >
                 <option value="">Select a time</option>
-                {OPEN_HOURS.map((hr) => (
-                  <option value={hr}>{formatTime(hr)}</option>
+                {OPEN_HOURS.map((hr, index) => (
+                  <option key={index} value={hr}>{formatTime(hr)}</option>
                 ))}
               </select>
             </div>
@@ -203,8 +204,8 @@ function SetAvailability() {
                 onChange={(e) => setEndTime(e.target.value)}
               >
                 <option value="">Select a time</option>
-                {OPEN_HOURS.filter((hr) => hr > startTime).map((hr) => (
-                  <option value={hr}>{formatTime(hr)}</option>
+                {OPEN_HOURS.filter((hr) => hr > startTime).map((hr, index) => (
+                  <option key={index} value={hr}>{formatTime(hr)}</option>
                 ))}
               </select>
             </div>

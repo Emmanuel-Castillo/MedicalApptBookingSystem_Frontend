@@ -13,7 +13,7 @@ function TimeSlotCard({timeSlot} : TimeSlotCardProps) {
 
         <div>
           <h5 className="mb-1 text-secondary">Doctor</h5>
-          <p className="mb-0 fw-medium">{timeSlot.doctor.fullName}</p>
+          <p className="mb-0 fw-medium">{timeSlot.doctor.user.fullName}</p>
         </div>
 
         <div>
@@ -22,7 +22,7 @@ function TimeSlotCard({timeSlot} : TimeSlotCardProps) {
         </div>
 
         <div>
-          <h5 className="mb-1 text-secondary">Appointment Time</h5>
+          <h5 className="mb-1 text-secondary">Time</h5>
           <p className="mb-0">
             {formatTime(timeSlot.startTime)} –{" "}
             {formatTime(timeSlot.endTime)}

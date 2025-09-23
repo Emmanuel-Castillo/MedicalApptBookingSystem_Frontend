@@ -67,7 +67,7 @@ function DoctorDetails() {
   }
 
   const { doctorProfile, bookedTimeSlotsNextTwoWeeks } = doctorInfo;
-  const { user: doctor } = doctorProfile
+  const { user: doctor, id: doctorId } = doctorProfile
 
   return (
     <div className="container mt-4">
@@ -91,19 +91,19 @@ function DoctorDetails() {
           <div className="d-flex flex-wrap gap-2">
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/doctors/${doctor.id}/timeSlots`)}
+              onClick={() => navigate(`/doctors/${doctorId}/timeSlots`)}
             >
               View All
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/doctors/${doctor.id}/timeSlots/create`)}
+              onClick={() => navigate(`/doctors/${doctorId}/timeSlots/create`)}
             >
               Create New
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/doctors/${doctor.id}/availability`)}
+              onClick={() => navigate(`/doctors/${doctorId}/availability`)}
             >
               Set Availability
             </button>

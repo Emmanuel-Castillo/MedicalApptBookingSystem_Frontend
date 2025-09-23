@@ -33,7 +33,7 @@ function AppointmentTable({
 
   if (appointments.length == 0)
     return (
-      <div className="bg-light p-3 rounded mb-4 border">
+      <div className="bg-light-subtle p-3 rounded mb-4 border">
         <p>No appointments found.</p>
       </div>
     );
@@ -68,8 +68,8 @@ function AppointmentTable({
             {appointments.map((appt, idx) => (
               <tr key={appt.id}>
                 <td>{idx + 1}</td>
-                {includePatient && <td>{appt.patient.fullName}</td>}
-                <td>{appt.timeSlot.doctor.fullName}</td>
+                {includePatient && <td>{appt.patient.user.fullName}</td>}
+                <td>{appt.timeSlot.doctor.user.fullName}</td>
                 <td>{formatDate(appt.timeSlot.date)}</td>
                 <td>{formatTime(appt.timeSlot.startTime)}</td>
                 <td>{formatTime(appt.timeSlot.endTime)}</td>

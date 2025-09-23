@@ -71,7 +71,7 @@ function Login() {
 
   return (
     <div className="container vh-100 d-flex justify-content-center align-items-center">
-      <div className="mx-auto bg-light p-4 rounded border border-2 border-black col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+      <div className="mx-auto p-4 rounded border border-2 border-black col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
         <h2>Login</h2>
 
         <ErrorsBox errors={errors} />

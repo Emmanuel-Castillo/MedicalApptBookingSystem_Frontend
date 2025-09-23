@@ -37,7 +37,7 @@ function TimeSlotTable({
 
   if (timeSlots.length == 0)
     return (
-      <div className="bg-light p-3 rounded mb-4 border">
+      <div className="bg-light-subtle p-3 rounded mb-4 border">
         <p>No time slots found.</p>
       </div>
     );
@@ -73,7 +73,7 @@ function TimeSlotTable({
             {timeSlots.map((ts) => (
               <tr key={ts.id}>
                 <td>{ts.id}</td>
-                {patientUse && <td>{ts.doctor.fullName}</td>}
+                {patientUse && <td>{ts.doctor.user.fullName}</td>}
                 <td>{formatDate(ts.date)}</td>
                 <td>{formatTime(ts.startTime)}</td>
                 <td>{formatTime(ts.endTime)}</td>

@@ -25,7 +25,7 @@ function SidePanel({ role }: SidePanelProps) {
     role == "Admin" ? adminPanelLinks : doctorPanelLinks;
   return (
     <div
-      className="d-flex h-100 p-3 text-white bg-dark collapse"
+      className="d-flex h-100 p-3 text-white bg-black collapse"
       data-testid={role + " sidepanel"}
     >
       <ul className="nav nav-pills flex-column">

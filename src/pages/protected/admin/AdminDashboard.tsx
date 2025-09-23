@@ -61,8 +61,8 @@ function AdminDashboard() {
           <h5 className="mb-0">All Users</h5>
         </div>
         <div className="card-body p-0">
-          <table className="table table-hover mb-0">
-            <thead className="table-light">
+          <table className="table table-hover table-bordered mb-0">
+            <thead className="table-dark">
               <tr>
                 <th scope="col">Full Name</th>
                 <th scope="col">Role</th>

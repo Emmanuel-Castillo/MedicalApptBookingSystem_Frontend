@@ -53,7 +53,7 @@ function PatientsAppointments() {
   const { appointments, totalCount } = appointmentsData;
 
   return (
-    <div className="mt-5">
+    <div className="container mt-5">
       <ErrorsBox errors={errors} />
 
       <div className="d-flex flex-wrap mb-3">

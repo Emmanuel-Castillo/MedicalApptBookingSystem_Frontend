@@ -10,7 +10,7 @@ function DoctorProfileDetails({profile, allowNavigation}: DoctorProfileDetailsPr
   const navigate = useNavigate();
   const { user, specialty } = profile;
   return (
-    <div className="bg-light p-3 rounded border mb-5">
+    <div className="bg-light-subtle p-3 rounded border mb-5">
       <div className="d-flex flex-wrap align-items-center mb-3">
         <h2 className="me-5">Doctor Details</h2>
         {allowNavigation && (

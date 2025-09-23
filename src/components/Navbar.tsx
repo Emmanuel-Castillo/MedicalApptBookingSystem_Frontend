@@ -1,4 +1,6 @@
 import { UserRole } from "../types/dtos";
+import DarkModeIndicator from "./DarkModeIndicator";
+import LightModeIndicator from "./LightModeIndicator";
 
 type NavLinkObj = {
   name: string;
@@ -15,8 +17,10 @@ type NavbarProps = {
   fullName: string;
   role: UserRole;
   logOut: () => void;
+  theme: string;
+  toggleDarkMode: () => void;
 };
-function Navbar({ fullName, role, logOut }: NavbarProps) {
+function Navbar({ fullName, role, logOut, theme, toggleDarkMode }: NavbarProps) {
   return (
     <nav className="navbar navbar-expand-md bg-body-secondary" data-testid={fullName + " navbar"}>
       <div className="container-fluid">
@@ -34,8 +38,11 @@ function Navbar({ fullName, role, logOut }: NavbarProps) {
             </div>
           </div>
         )}
-        <div className="d-flex gap-3 ms-auto">
-          <div className="dropdown">
+        <div className="d-flex gap-3 ms-auto align-items-center">
+          <div onClick={toggleDarkMode} role="button">
+            {theme === "dark" ? <DarkModeIndicator/> : <LightModeIndicator/>}
+          </div>
+          <div className="dropdown" role="button">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="36"
