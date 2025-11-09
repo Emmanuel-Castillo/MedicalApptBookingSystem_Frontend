@@ -83,7 +83,9 @@ function BookAppointment() {
     <div className="container mt-5">
       {showModal && selectedSlot && (
         <Modal
-          onConfirm={() => handleBook(selectedSlot.id)}
+          onConfirm={() => {
+            // handleBook(selectedSlot.id)
+          } }
           onCancel={() => setShowModal(false)}
           title={"Confirm Booking"}
           body={<TimeSlotCard timeSlot={selectedSlot}/>}

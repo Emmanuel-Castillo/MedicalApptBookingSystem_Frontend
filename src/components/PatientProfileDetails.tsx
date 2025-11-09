@@ -1,11 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { PatientProfileDto, UserDto } from "../types/dtos";
+import {
+  formatHeight,
+  formatWeight,
+} from "../utils/FormatPatientWeightAndHeight";
 
 type PatientProfileDetailsProps = {
   profile: PatientProfileDto;
   allowNavigation: boolean;
 };
-function PatientProfileDetails({ profile, allowNavigation }: PatientProfileDetailsProps) {
+function PatientProfileDetails({
+  profile,
+  allowNavigation,
+}: PatientProfileDetailsProps) {
   const navigate = useNavigate();
   const { user, heightImperial, weightImperial } = profile;
   return (
@@ -32,10 +39,10 @@ function PatientProfileDetails({ profile, allowNavigation }: PatientProfileDetai
           <strong>Role:</strong> {user.role}
         </p>
         <p>
-          <strong>Height:</strong> {heightImperial}
+          <strong>Height:</strong> {formatHeight(heightImperial)}
         </p>
         <p>
-          <strong>Weight:</strong> {weightImperial}
+          <strong>Weight:</strong> {formatWeight(weightImperial)}
         </p>
       </div>
     </div>

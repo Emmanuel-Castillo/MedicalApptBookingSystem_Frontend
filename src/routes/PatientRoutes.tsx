@@ -40,7 +40,7 @@ function PatientRoutes() {
 
       {/* BOOK APPOINTMENTS PAGE */}
       <Route
-        path="patients/:id/book-appointment"
+        path="/patients/book-appointment"
         element={
           <PrivateRoute allowedRoles={["Admin", "Patient"]}>
             <BookAppointment />

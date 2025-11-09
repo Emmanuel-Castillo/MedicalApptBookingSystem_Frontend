@@ -6,6 +6,8 @@ import api from "../../../api/axios";
 import ErrorsBox from "../../../components/ErrorsBox";
 import AppointmentTable from "../../../components/AppointmentTable";
 import PatientProfileDetails from "../../../components/PatientProfileDetails";
+import { usePatientStore } from "../../../store/patient.store";
+import { AppointmentDto } from "../../../types/dtos";
 
 // Component accessible for Patients and Admins ONLY
 function PatientDetails() {
@@ -13,7 +15,8 @@ function PatientDetails() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [patientInfo, setPatientInfo] = useState<GetPatientInfoResponse | null>(null);
+  const {patient, updatePatient} = usePatientStore()
+  const [appointmentsThisWeek, setAppointmentsThisWeek] = useState<AppointmentDto[]>([])
   const [loadingPatientInfo, setLoadingPatientInfo] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -29,7 +32,9 @@ function PatientDetails() {
         else patientId = user!.id;
 
         const response = await api.get(`/patients/${patientId}`);
-        setPatientInfo(response.data);
+        const {patientProfile, appointmentsThisWeek} = response.data as unknown as GetPatientInfoResponse
+        updatePatient(patientProfile)
+        setAppointmentsThisWeek(appointmentsThisWeek)
       } catch (error: any) {
         const serverMessage =
           error.response.data || error.message || "Appointment booking failed!";
@@ -43,16 +48,13 @@ function PatientDetails() {
   }, []);
 
   if (loadingPatientInfo) return <div>Loading patient details...</div>;
-  if (!patientInfo) return <div>Patient details not found.</div>;
-
-  const { patientProfile, appointmentsThisWeek } = patientInfo;
-  const { user: patient, id: patientId } = patientProfile
+  if (!patient) return <div>Patient details not found.</div>;
 
   return (
     <div className="container mt-5 d-flex flex-column gap-3">
       <ErrorsBox errors={errors}/>
 
-      <PatientProfileDetails profile={patientProfile} allowNavigation={user!.role === "Admin"}/>
+      <PatientProfileDetails profile={patient} allowNavigation={user!.role === "Admin"}/>
 
       <div className="col">
         <div className="d-flex flex-wrap mb-2 align-items-center mb-3">
@@ -60,13 +62,13 @@ function PatientDetails() {
           <div className="d-flex flex-wrap gap-2">
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/patients/${patientId}/book-appointment`)}
+              onClick={() => navigate(`/patients/book-appointment`)}
             >
               Create New
             </button>
             <button
               className="btn btn-primary"
-              onClick={() => navigate(`/patients/${patientId}/appointments`)}
+              onClick={() => navigate(`/patients/${patient.id}/appointments`)}
             >
               View All
             </button>
