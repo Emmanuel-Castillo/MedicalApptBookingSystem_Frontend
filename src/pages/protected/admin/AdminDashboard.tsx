@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { UserDto } from "../../../types/dtos";
 import ErrorsBox from "../../../components/ErrorsBox";
 import api from "../../../api/axios";
+import { useAuthStore } from "../../../store/auth.store";
 
 function AdminDashboard() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const {user} = useAuthStore()
   const navigate = useNavigate();
 
   const [users, setUsers] = useState<UserDto[]>([]);

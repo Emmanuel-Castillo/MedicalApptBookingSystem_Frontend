@@ -3,9 +3,10 @@ import { useAuth } from "../../context/AuthContext";
 import DoctorDetails from "./doctors/DoctorDetails";
 import PatientDetails from "./patients/PatientDetails";
 import AdminDashboard from "./admin/AdminDashboard";
+import { useAuthStore } from "../../store/auth.store";
 
 function Home() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   switch (user!.role) {
     case "Admin":

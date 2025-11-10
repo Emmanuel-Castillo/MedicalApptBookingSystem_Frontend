@@ -7,25 +7,33 @@ import DoctorRoutes from "./routes/DoctorRoutes";
 import AdminRoutes from "./routes/AdminRoutes";
 import PatientRoutes from "./routes/PatientRoutes";
 import { useEffect, useState } from "react";
+import { useAuthStore } from "./store/auth.store";
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+  const { fetchAuthenticatedUser } = useAuthStore();
   function toggleTheme() {
-    setTheme(prev => prev === "dark" ? "light": "dark")
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }
-  
+
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.setAttribute("data-bs-theme", "dark");
     } else {
       document.documentElement.setAttribute("data-bs-theme", "light");
     }
-    localStorage.setItem("theme", theme)
+    localStorage.setItem("theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    fetchAuthenticatedUser();
+  }, []);
   return (
     <Routes>
       {/* NAVBAR ACCROSS ALL AUTHORIZED PAGES */}
-      <Route element={<ProtectedLayout theme={theme} toggleDarkMode={toggleTheme}/>}>
+      <Route
+        element={<ProtectedLayout theme={theme} toggleDarkMode={toggleTheme} />}
+      >
         {/* HOME */}
         <Route
           path="/"

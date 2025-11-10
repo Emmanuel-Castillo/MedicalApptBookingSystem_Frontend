@@ -2,27 +2,29 @@ import { useAuth } from "../context/AuthContext";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import SidePanel from "./SidePanel";
+import { useAuthStore } from "../store/auth.store";
 
 type ProtectedLayoutProps = {
   theme: string;
   toggleDarkMode: () => void;
 }
 function ProtectedLayout({ theme, toggleDarkMode }: ProtectedLayoutProps) {
-  const { user, logOut } = useAuth();
-  const navigate = useNavigate();
+  // const { user, logOut } = useAuth();
+  const {isLoading, isAuthenticated, user, logOut} = useAuthStore()
+  // const navigate = useNavigate();
 
-  const handleLogOut = () => {
-    logOut();
-    navigate("/login");
-  };
+  // const handleLogOut = () => {
+  //   logOut();
+  //   navigate("/login");
+  // };
 
-  if (!user) return <Navigate to={"/login"} />;
-  return (
+  if (!isLoading && !isAuthenticated) return <Navigate to={"/login"} />;
+  return user && (
     <div
       className={user.role == "Patient" ? "" : "d-flex flex-column min-vh-100"}
     >
       {/* Navbar */}
-      <Navbar fullName={user.fullName} role={user.role} logOut={handleLogOut} theme={theme} toggleDarkMode={toggleDarkMode}/>
+      <Navbar fullName={user.fullName} role={user.role} logOut={logOut} theme={theme} toggleDarkMode={toggleDarkMode}/>
 
       {/* Main content */}
       {user.role == "Patient" ? (

@@ -2,6 +2,7 @@ import { JSX } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { UserRole } from "../types/dtos";
+import { useAuthStore } from "../store/auth.store";
 
 type PrivateRouteProps = {
   children: JSX.Element;
@@ -13,11 +14,12 @@ type PrivateRouteProps = {
 // allowedRoles is a list of roles that allow authenticated users to enter the route
 // if their role is included in the list
 function PrivateRoute({ children, allowedRoles }: PrivateRouteProps) {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const { user } = useAuthStore();
 
   // user is checked as non-null by ProtectedLayout
   if (allowedRoles && !allowedRoles.includes(user!.role)) {
-    return <Navigate to={"/login"} replace />;
+    return <Navigate to={"/"} replace />;
   }
   return children;
 }

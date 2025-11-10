@@ -6,68 +6,17 @@ import { validateForm } from "../../utils/ValidateAuthForm";
 import { UserLoginDto, UserRole } from "../../types/dtos";
 import api from "../../api/axios";
 import ErrorsBox from "../../components/ErrorsBox";
-
-// Used to parse JWT token claims
-const ROLE_CLAIM_URL =
-  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-const OTHER_CLAIMS_URL =
-  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims";
+import { useAuthStore } from "../../store/auth.store";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
 
   const navigate = useNavigate();
-  const { user, logIn } = useAuth();
+  const {isAuthenticated, isLoading, errors, logIn} = useAuthStore()
 
   // If user already logged, navigate to dashboard
-  if (user) return <Navigate to={"/"} replace />;
-
-  // Log in user
-  const handleSubmit = async () => {
-    // Login user
-    try {
-      setErrors([]);
-      setLoading(true);
-
-      // Check for form errors
-      const validationErrors = validateForm(email, password);
-      if (validationErrors.length > 0) {
-        setLoading(false);
-        setErrors(validationErrors);
-        return;
-      }
-      const dto: UserLoginDto = {
-        Email: email,
-        Password: password,
-      };
-
-      const response = await api.post("/auth/login", dto);
-      const token = response.data.token;
-
-      // Decode JWT token to retrieve user data
-      const decoded: any = jwtDecode(token);
-      const userData: AuthUser = {
-        id: decoded[`${OTHER_CLAIMS_URL}/nameidentifier`],
-        fullName: decoded[`${OTHER_CLAIMS_URL}/name`],
-        email: decoded[`${OTHER_CLAIMS_URL}/emailaddress`],
-        role: decoded[ROLE_CLAIM_URL] as UserRole,
-        token: token,
-      };
-
-      logIn(userData);
-    } catch (err: any) {
-      console.log(err);
-      const serverMessage =
-        err.response.data || err.message || "Registration failed!";
-      setErrors([serverMessage]);
-    } finally {
-      setLoading(false);
-      return;
-    }
-  };
+  if (isAuthenticated) return <Navigate to={"/"} replace />;
 
   return (
     <div className="container vh-100 d-flex justify-content-center align-items-center">
@@ -79,7 +28,7 @@ function Login() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleSubmit();
+            logIn(email, password);
           }}
         >
           <div className="mb-3">
@@ -89,7 +38,7 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="form-control"
               required
-              disabled={loading}
+              disabled={isLoading}
             />
           </div>
           <div className="mb-3">
@@ -99,11 +48,11 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="form-control"
               required
-              disabled={loading}
+              disabled={isLoading}
               type="password"
             />
           </div>
-          <button type="submit" className="btn btn-success" disabled={loading}>
+          <button type="submit" className="btn btn-success" disabled={isLoading}>
             Login
           </button>
         </form>
