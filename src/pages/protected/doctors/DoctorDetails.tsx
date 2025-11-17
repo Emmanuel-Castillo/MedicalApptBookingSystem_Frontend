@@ -32,7 +32,7 @@ function DoctorDetails() {
         let doctorId: string;
 
         // If admin, assign URL id param to doctorId
-        if (user!.role != "Admin" && id != null) doctorId = id;
+        if (user!.role == "Admin" && id != null) doctorId = id;
         // Else, assign the curr user id to doctorId
         else doctorId = user!.id;
 
