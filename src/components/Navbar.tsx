@@ -8,7 +8,7 @@ type NavLinkObj = {
 };
 const patientNavLinks: NavLinkObj[] = [
   { name: "Home", link: "/" },
-  { name: "All Doctors", link: "/" },
+  { name: "All Doctors", link: "/all-doctors" },
   { name: "Book Appointment", link: "/patients/book-appointment" },
   { name: "Contact", link: "/" },
 ];

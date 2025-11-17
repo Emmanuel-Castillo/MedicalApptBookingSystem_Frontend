@@ -7,7 +7,6 @@ import api from "../../../api/axios";
 import { useAuthStore } from "../../../store/auth.store";
 
 function AdminDashboard() {
-  // const { user } = useAuth();
   const {user} = useAuthStore()
   const navigate = useNavigate();
 

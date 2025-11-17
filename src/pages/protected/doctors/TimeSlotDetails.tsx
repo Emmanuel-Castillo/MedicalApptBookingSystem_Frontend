@@ -6,10 +6,11 @@ import api from "../../../api/axios";
 import ErrorsBox from "../../../components/ErrorsBox";
 import TimeSlotCard from "../../../components/TimeSlotCard";
 import AppointmentBox from "../../../components/AppointmentBox";
+import { useAuthStore } from "../../../store/auth.store";
 
 function TimeSlotDetails() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   const [timeSlotData, setTimeSlotData] = useState<GetTimeSlotResponse | null>(
     null

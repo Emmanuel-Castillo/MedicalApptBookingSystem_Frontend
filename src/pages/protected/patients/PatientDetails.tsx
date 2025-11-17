@@ -8,15 +8,18 @@ import AppointmentTable from "../../../components/AppointmentTable";
 import PatientProfileDetails from "../../../components/PatientProfileDetails";
 import { usePatientStore } from "../../../store/patient.store";
 import { AppointmentDto } from "../../../types/dtos";
+import { useAuthStore } from "../../../store/auth.store";
 
 // Component accessible for Patients and Admins ONLY
 function PatientDetails() {
   const { id } = useParams();
-  const { user } = useAuth();
   const navigate = useNavigate();
-
-  const {patient, updatePatient} = usePatientStore()
-  const [appointmentsThisWeek, setAppointmentsThisWeek] = useState<AppointmentDto[]>([])
+  
+  const { user } = useAuthStore();
+  const { patient, updatePatient } = usePatientStore();
+  const [appointmentsThisWeek, setAppointmentsThisWeek] = useState<
+    AppointmentDto[]
+  >([]);
   const [loadingPatientInfo, setLoadingPatientInfo] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -31,13 +34,16 @@ function PatientDetails() {
         // Else, curr user must be a Patient, so use their user.id instead
         else patientId = user!.id;
 
-        const response = await api.get(`/patients/${patientId}`);
-        const {patientProfile, appointmentsThisWeek} = response.data as unknown as GetPatientInfoResponse
-        updatePatient(patientProfile)
-        setAppointmentsThisWeek(appointmentsThisWeek)
+        const { data } = await api.get(`/patients/${patientId}`);
+        const { patientProfile, appointmentsThisWeek } = data;
+        updatePatient(patientProfile);
+        setAppointmentsThisWeek(appointmentsThisWeek);
       } catch (error: any) {
         const serverMessage =
-          error.response.data || error.message || "Appointment booking failed!";
+          error?.response?.data ||
+          error?.message ||
+          "Appointment booking failed!";
+        console.log(error);
         setErrors([serverMessage]);
       } finally {
         setLoadingPatientInfo(false);
@@ -48,13 +54,20 @@ function PatientDetails() {
   }, []);
 
   if (loadingPatientInfo) return <div>Loading patient details...</div>;
-  if (!patient) return <div>Patient details not found.</div>;
+  if (!patient)
+    return (
+      <div>
+        <ErrorsBox errors={errors} />
+        Patient details not found.
+      </div>
+    );
 
   return (
     <div className="container mt-5 d-flex flex-column gap-3">
-      <ErrorsBox errors={errors}/>
-
-      <PatientProfileDetails profile={patient} allowNavigation={user!.role === "Admin"}/>
+      <PatientProfileDetails
+        profile={patient}
+        allowNavigation={user!.role === "Admin"}
+      />
 
       <div className="col">
         <div className="d-flex flex-wrap mb-2 align-items-center mb-3">
@@ -75,9 +88,7 @@ function PatientDetails() {
           </div>
         </div>
         <h6>Booked - This Week</h6>
-        <AppointmentTable
-          appointments={appointmentsThisWeek}
-        />
+        <AppointmentTable appointments={appointmentsThisWeek} />
       </div>
     </div>
   );

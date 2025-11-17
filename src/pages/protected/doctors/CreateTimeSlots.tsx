@@ -5,10 +5,11 @@ import { CreateTimeSlotRequest } from "../../../types/requests";
 import api from "../../../api/axios";
 import ErrorsBox from "../../../components/ErrorsBox";
 import { formatTime, OPEN_HOURS } from "../../../utils/FormatDateAndTime";
+import { useAuthStore } from "../../../store/auth.store";
 
 function CreateTimeSlots() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   const [date, setDate] = useState<string>("");
   const [startTime, setStartTime] = useState<string>("");

@@ -1,13 +1,15 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
-import { DoctorProfileDto, UserDto } from '../types/dtos';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { DoctorProfileDto, UserDto } from "../types/dtos";
+import { useAuthStore } from "../store/auth.store";
 
 type DoctorsTableProps = {
   doctors: DoctorProfileDto[];
 };
 
-function DoctorsTable({doctors}: DoctorsTableProps) {
-    const navigate = useNavigate();
+function DoctorsTable({ doctors }: DoctorsTableProps) {
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
   if (doctors.length == 0)
     return (
       <div className="bg-light p-3 rounded mb-4 border">
@@ -40,12 +42,16 @@ function DoctorsTable({doctors}: DoctorsTableProps) {
                 >
                   View
                 </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => navigate(`/users/${profile.userId}/edit-user`)}
-                >
-                  Edit
-                </button>
+                {user && user.role === "Admin" && (
+                  <button
+                    className="btn btn-primary"
+                    onClick={() =>
+                      navigate(`/users/${profile.userId}/edit-user`)
+                    }
+                  >
+                    Edit
+                  </button>
+                )}
               </td>
             </tr>
           ))}
@@ -55,4 +61,4 @@ function DoctorsTable({doctors}: DoctorsTableProps) {
   );
 }
 
-export default DoctorsTable
+export default DoctorsTable;

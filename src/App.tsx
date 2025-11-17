@@ -8,6 +8,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import PatientRoutes from "./routes/PatientRoutes";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./store/auth.store";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
@@ -29,27 +30,32 @@ function App() {
     fetchAuthenticatedUser();
   }, []);
   return (
-    <Routes>
-      {/* NAVBAR ACCROSS ALL AUTHORIZED PAGES */}
-      <Route
-        element={<ProtectedLayout theme={theme} toggleDarkMode={toggleTheme} />}
-      >
-        {/* HOME */}
+    <>
+      <Toaster />
+      <Routes>
+        {/* NAVBAR ACCROSS ALL AUTHORIZED PAGES */}
         <Route
-          path="/"
           element={
-            <PrivateRoute allowedRoles={["Admin", "Doctor", "Patient"]}>
-              <Home />
-            </PrivateRoute>
+            <ProtectedLayout theme={theme} toggleDarkMode={toggleTheme} />
           }
-        />
-        {AdminRoutes()}
-        {PatientRoutes()}
-        {DoctorRoutes()}
-      </Route>
+        >
+          {/* HOME */}
+          <Route
+            path="/"
+            element={
+              <PrivateRoute allowedRoles={["Admin", "Doctor", "Patient"]}>
+                <Home />
+              </PrivateRoute>
+            }
+          />
+          {AdminRoutes()}
+          {PatientRoutes()}
+          {DoctorRoutes()}
+        </Route>
 
-      {AuthRoutes()}
-    </Routes>
+        {AuthRoutes()}
+      </Routes>
+    </>
   );
 }
 

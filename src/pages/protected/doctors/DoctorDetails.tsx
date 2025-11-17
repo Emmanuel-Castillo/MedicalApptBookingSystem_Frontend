@@ -10,11 +10,12 @@ import ErrorsBox from "../../../components/ErrorsBox";
 import UserDetails from "../../../components/PatientProfileDetails";
 import TimeSlotTable from "../../../components/TimeSlotTable";
 import DoctorProfileDetails from "../../../components/DoctorProfileDetails";
+import { useAuthStore } from "../../../store/auth.store";
 
 // Component accessible for Doctors and Admins ONLY
 function DoctorDetails() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
 
   const [doctorInfo, setDoctorInfo] = useState<GetDoctorInfoResponse | null>(null);
@@ -31,7 +32,7 @@ function DoctorDetails() {
         let doctorId: string;
 
         // If admin, assign URL id param to doctorId
-        if (user!.role == "Admin" && id != null) doctorId = id;
+        if (user!.role != "Admin" && id != null) doctorId = id;
         // Else, assign the curr user id to doctorId
         else doctorId = user!.id;
 

@@ -14,7 +14,6 @@ type PrivateRouteProps = {
 // allowedRoles is a list of roles that allow authenticated users to enter the route
 // if their role is included in the list
 function PrivateRoute({ children, allowedRoles }: PrivateRouteProps) {
-  // const { user } = useAuth();
   const { user } = useAuthStore();
 
   // user is checked as non-null by ProtectedLayout

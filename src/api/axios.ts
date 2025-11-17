@@ -12,6 +12,7 @@ const api = axios.create({
 // 1. Request interceptor: Add jwt access token to headers
 api.interceptors.request.use(
   (config) => {
+    
     const token = useAuthStore.getState().token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

@@ -9,10 +9,11 @@ import Modal from "../../../components/Modal";
 import TimeSlotCard from "../../../components/TimeSlotCard";
 import ErrorsBox from "../../../components/ErrorsBox";
 import TimeSlotTable from "../../../components/TimeSlotTable";
+import { useAuthStore } from "../../../store/auth.store";
 
 function BookAppointment() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
 
   const [availableTSData, setAvailableTSData] =

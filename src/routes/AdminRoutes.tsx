@@ -20,7 +20,7 @@ function AdminRoutes() {
       <Route
         path="/all-doctors"
         element={
-          <PrivateRoute allowedRoles={["Admin"]}>
+          <PrivateRoute>
             <AllDoctors />
           </PrivateRoute>
         }

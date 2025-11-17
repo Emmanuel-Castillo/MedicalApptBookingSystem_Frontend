@@ -5,51 +5,19 @@ import { useAuth } from "../../context/AuthContext";
 import { validateForm } from "../../utils/ValidateAuthForm";
 import api from "../../api/axios";
 import ErrorsBox from "../../components/ErrorsBox";
+import { useAuthStore } from "../../store/auth.store";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [role, setRole] = useState<UserRole>("Patient");
 
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { isAuthenticated, user, register, isLoading, errors } = useAuthStore();
 
   // If user already logged, navigate to dashboard
-  if (user) return <Navigate to={"/"} replace />;
-
-  // Register user
-  const handleSubmit = async () => {
-    try {
-      setErrors([]);
-      setLoading(true);
-
-      // Check for form errors
-      const validationErrors = validateForm(email, password, fullName);
-      if (validationErrors.length > 0) {
-        setLoading(false);
-        setErrors(validationErrors);
-        return;
-      }
-
-      const role: UserRole = "Patient";
-      const dto: UserRegisterDto = {
-        FullName: fullName,
-        Email: email,
-        Password: password,
-        Role: role,
-      };
-      await api.post("/auth/register", dto);
-      navigate("/login");
-    } catch (err: any) {
-      console.log(err);
-      const serverMessage = err.message || "Registration failed!";
-      setErrors([serverMessage]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (isAuthenticated && user) return <Navigate to={"/"} replace />;
 
   return (
     <div className="container vh-100 d-flex justify-content-center align-items-center">
@@ -58,7 +26,12 @@ const Register = () => {
 
         <ErrorsBox errors={errors} />
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            register(email, password, fullName, role);
+          }}
+        >
           <div className="mb-3">
             <label>Full Name</label>
             <input
@@ -66,7 +39,7 @@ const Register = () => {
               className="form-control"
               onChange={(e) => setFullName(e.target.value)}
               required
-              disabled={loading}
+              disabled={isLoading}
             />
           </div>
           <div className="mb-3">
@@ -76,7 +49,7 @@ const Register = () => {
               className="form-control"
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={loading}
+              disabled={isLoading}
               type="email"
             />
           </div>
@@ -87,11 +60,25 @@ const Register = () => {
               className="form-control"
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={loading}
+              disabled={isLoading}
               type="password"
             />
           </div>
-          <button className="btn btn-primary" disabled={loading}>
+          <div className="mb-3">
+            <label htmlFor="role">Role:</label>
+            <select
+              name="role"
+              id="role"
+              className="form-select"
+              value={role}
+              onChange={(e) => setRole(e.target.value as UserRole)}
+            >
+              <option value="Patient">Patient</option>
+              <option value="Doctor">Doctor</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+          <button className="btn btn-primary" disabled={isLoading}>
             Register
           </button>
         </form>

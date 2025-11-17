@@ -9,7 +9,6 @@ type ProtectedLayoutProps = {
   toggleDarkMode: () => void;
 }
 function ProtectedLayout({ theme, toggleDarkMode }: ProtectedLayoutProps) {
-  // const { user, logOut } = useAuth();
   const {isLoading, isAuthenticated, user, logOut} = useAuthStore()
   // const navigate = useNavigate();
 

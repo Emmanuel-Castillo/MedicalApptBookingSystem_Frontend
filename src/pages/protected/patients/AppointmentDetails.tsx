@@ -5,10 +5,11 @@ import { AppointmentDto } from "../../../types/dtos";
 import api from "../../../api/axios";
 import ErrorsBox from "../../../components/ErrorsBox";
 import AppointmentBox from "../../../components/AppointmentBox";
+import { useAuthStore } from "../../../store/auth.store";
 
 function AppointmentDetails() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   const [appointmentData, setAppointmentData] = useState<AppointmentDto | null>(
     null
