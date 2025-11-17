@@ -29,14 +29,14 @@ function DoctorDetails() {
   useEffect(() => {
     const getDoctorDetails = async () => {
       try {
-        let doctorId: string;
+        let doctorUserId: string;
 
         // If admin, assign URL id param to doctorId
-        if (user!.role == "Admin" && id != null) doctorId = id;
+        if (user!.role == "Admin" && id != null) doctorUserId = id;
         // Else, assign the curr user id to doctorId
-        else doctorId = user!.id;
+        else doctorUserId = user!.id;
 
-        const response = await api.get(`/doctors/${doctorId}`);
+        const response = await api.get(`/doctors/${doctorUserId}`);
         setDoctorInfo(response.data as GetDoctorInfoResponse);
       } catch (error: any) {
         console.error("Failed to fetch user details:", error);
@@ -68,7 +68,7 @@ function DoctorDetails() {
   }
 
   const { doctorProfile, bookedTimeSlotsNextTwoWeeks } = doctorInfo;
-  const { user: doctor, id: doctorId } = doctorProfile
+  const { id: doctorId } = doctorProfile
 
   return (
     <div className="container mt-4">

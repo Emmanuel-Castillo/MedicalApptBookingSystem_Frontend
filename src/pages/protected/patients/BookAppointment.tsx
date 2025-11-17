@@ -86,6 +86,7 @@ function BookAppointment() {
         <Modal
           onConfirm={() => {
             // handleBook(selectedSlot.id)
+            console.log("TBD")
           } }
           onCancel={() => setShowModal(false)}
           title={"Confirm Booking"}

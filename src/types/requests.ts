@@ -6,7 +6,7 @@ export type BookAppointmentRequest = {
 };
 
 export type CreateTimeSlotRequest = {
-  DoctorId?: string;
+  DoctorId: string;
   Date: string;
   StartTime: string;
   EndTime: string;

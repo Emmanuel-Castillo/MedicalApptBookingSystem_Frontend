@@ -8,8 +8,7 @@ import { formatTime, OPEN_HOURS } from "../../../utils/FormatDateAndTime";
 import { useAuthStore } from "../../../store/auth.store";
 
 function CreateTimeSlots() {
-  const { id } = useParams();
-  const { user } = useAuthStore();
+  const { id: doctorId } = useParams();
 
   const [date, setDate] = useState<string>("");
   const [startTime, setStartTime] = useState<string>("");
@@ -20,28 +19,15 @@ function CreateTimeSlots() {
 
   const navigate = useNavigate();
 
-  // Set endTime to be an hour after startTime
-  useEffect(() => {
-    if (!startTime) {
-      setEndTime("");
-      return;
-    }
+  const changeTimes = (value: string) => {
+    const idx = OPEN_HOURS.indexOf(value)
+    if (idx === -1) return
 
-    console.log(startTime);
-    const [hour, minutes] = startTime.split(":");
-    const isPm = Number(hour) >= 12;
+    setStartTime(value)
+    setEndTime(OPEN_HOURS[idx + 1])
+  }
 
-    // // Convert startTime string to Date
-    // const start = new Date(startTime);
-    // start.setHours(start.getHours() + 1);
-
-    // // Format it back to a datetime-local string
-    // const offset = -start.getTimezoneOffset();
-    // const localTime = new Date(start.getTime() + offset * 60000);
-    // const formattedEndTime = localTime.toISOString().slice(0, 16);
-
-    // setEndTime(formattedEndTime);
-  }, [startTime]);
+  useEffect(() => {console.log("startTime", startTime, "endTime", endTime)}, [startTime, endTime])
 
   // Set formReady if all inputs are not null
   useEffect(() => {
@@ -53,12 +39,13 @@ function CreateTimeSlots() {
     try {
       setLoading(true);
       setErrors([]);
+      if (!doctorId) throw Error("Doctor Id is not passed through URL params!")
 
       const body: CreateTimeSlotRequest = {
         Date: date,
         StartTime: startTime + ":00", // e.g., "16:00:00"
         EndTime: endTime + ":00",
-        DoctorId: user!.role == "Admin" ? id : undefined,
+        DoctorId: doctorId,
       };
 
       console.log(body);
@@ -103,15 +90,15 @@ function CreateTimeSlots() {
             <label>Start Time</label>
             <select
               value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
+              onChange={(e) => changeTimes(e.target.value)}
               className="form-control"
               required
               disabled={loading}
             >
               <option value="">Select a time</option>
-              {OPEN_HOURS.map((hr) => (
-                <option value={hr}>{formatTime(hr)}</option>
-              ))}
+              {OPEN_HOURS.map((hr, index) => 
+                {if (index < OPEN_HOURS.length - 1) return <option value={hr}>{formatTime(hr)}</option>}
+              )}
             </select>
           </div>
 
@@ -119,10 +106,9 @@ function CreateTimeSlots() {
             <label>End Time</label>
             <select
               value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
               className="form-control"
               required
-              disabled={loading || !startTime}
+              disabled={true}
             >
               <option value="">Select a time</option>
               {OPEN_HOURS.filter((hr) => hr > startTime).map((hr) => (

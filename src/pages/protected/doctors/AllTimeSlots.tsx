@@ -9,7 +9,7 @@ import TimeSlotCard from "../../../components/TimeSlotCard";
 import TimeSlotTable from "../../../components/TimeSlotTable";
 
 function AllTimeSlots() {
-  const { id } = useParams();
+  const { id: doctorId } = useParams();
   const navigate = useNavigate();
 
   const [timeSlotData, setTimeSlotData] =
@@ -28,7 +28,7 @@ function AllTimeSlots() {
   const fetchPageOfAllTimeSlots = async () => {
     try {
       const response = await api.get(
-        `doctors/${id}/timeslots?pageNumber=${page}&pageSize=${pageSize}`
+        `doctors/${doctorId}/timeslots?pageNumber=${page}&pageSize=${pageSize}`
       );
       setTimeSlotData(response.data);
     } catch (error: any) {
