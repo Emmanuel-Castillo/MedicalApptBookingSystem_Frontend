@@ -30,6 +30,7 @@ interface AuthStore {
   logOut: () => void;
 
   fetchAuthenticatedUser: () => void;
+  updateErrors: (errors: string[]) => void;
 }
 export const LOCAL_STORAGE_AUTH_TOKEN = "token";
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -133,5 +134,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ isLoading: false });
       toast.dismiss(toastId);
     }
+  },
+  updateErrors: (errors: string[]) => {
+    set({ errors: errors });
   },
 }));

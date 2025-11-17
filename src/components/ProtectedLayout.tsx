@@ -17,7 +17,7 @@ function ProtectedLayout({ theme, toggleDarkMode }: ProtectedLayoutProps) {
   //   navigate("/login");
   // };
 
-  if (!isLoading && !isAuthenticated) return <Navigate to={"/login"} />;
+  if (!isLoading && !isAuthenticated) return <Navigate to={"/authenticate"} />;
   return user && (
     <div
       className={user.role == "Patient" ? "" : "d-flex flex-column min-vh-100"}

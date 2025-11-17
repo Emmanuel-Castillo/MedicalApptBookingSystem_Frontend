@@ -32,7 +32,7 @@ function ResetPassword() {
       };
       console.log(request);
       await api.post("/auth/reset-password", request);
-      navigate("/login");
+      navigate("/authenticate");
     } catch (error: any) {
       console.log(error);
       const serverMessage = error.message || "Password reset request failed!";

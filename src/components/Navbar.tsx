@@ -1,6 +1,6 @@
 import { UserRole } from "../types/dtos";
-import DarkModeIndicator from "./DarkModeIndicator";
-import LightModeIndicator from "./LightModeIndicator";
+import DarkModeIndicator from "./ui/DarkModeIndicator";
+import LightModeIndicator from "./ui/LightModeIndicator";
 
 type NavLinkObj = {
   name: string;
